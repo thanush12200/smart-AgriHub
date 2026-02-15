@@ -1,0 +1,22 @@
+{
+  "cropPrediction": {
+    "soilType": "black",
+    "rainfall": 145,
+    "temperature": 29,
+    "region": "Karnataka"
+  },
+  "fertilizerRecommendation": {
+    "crop": "rice",
+    "npk": {
+      "n": 34,
+      "p": 28,
+      "k": 31
+    }
+  },
+  "chatbotQuery": {
+    "message": "My tomato leaves have yellow spots and fungus.",
+    "context": ["I recently had unseasonal rains"],
+    "region": "Karnataka",
+    "language": "en"
+  }
+}

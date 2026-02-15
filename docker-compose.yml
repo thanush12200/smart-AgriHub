@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: smart-agri-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  ml-service:
+    build:
+      context: ./ml-service
+    container_name: smart-agri-ml
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+
+  backend:
+    build:
+      context: ./backend
+    container_name: smart-agri-backend
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+      - ml-service
+    env_file:
+      - ./backend/.env.example
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/smart_agri_hub
+      - ML_SERVICE_URL=http://ml-service:8000
+      - CLIENT_URL=http://localhost:5173
+    ports:
+      - '5000:5000'
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: smart-agri-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '5173:4173'
+
+volumes:
+  mongo_data:
