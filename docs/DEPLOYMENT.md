@@ -18,7 +18,7 @@ This repo ships with a Netlify config:
 - `netlify.toml` (at repo root) sets:
   - base: `frontend`
   - build: `npm ci && npm run build`
-  - publish: `frontend/dist`
+  - publish: `dist` (relative to base directory)
   - SPA redirect for React Router (`/* -> /index.html`)
 
 ### Netlify Deploy Steps
