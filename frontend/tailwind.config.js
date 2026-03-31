@@ -4,16 +4,64 @@ export default {
   theme: {
     extend: {
       colors: {
-        soil: '#334155',
-        leaf: '#2f7d32',
-        sun: '#f4a261',
-        sky: '#5ca4d6'
+        brand: {
+          50: '#f0faf4',
+          100: '#d1f0dd',
+          200: '#a3e1bb',
+          300: '#6bcc94',
+          400: '#38a169',
+          500: '#1a7a4c',
+          600: '#14613c',
+          700: '#0f4a2e',
+          800: '#0a3320',
+          900: '#061c12',
+        },
+        accent: {
+          50: '#fef6ee',
+          100: '#fce8d3',
+          200: '#f9cda6',
+          300: '#f4a96e',
+          400: '#e07c3a',
+          500: '#c8611f',
+          600: '#a04a17',
+          700: '#7a3812',
+        },
+        surface: {
+          0: '#ffffff',
+          50: '#faf9f7',
+          100: '#f3f1ed',
+          200: '#e8e5df',
+          300: '#d4d0c8',
+        },
       },
       fontFamily: {
-        display: ['Space Grotesk', 'sans-serif'],
-        body: ['Manrope', 'sans-serif']
-      }
-    }
+        display: ['"DM Serif Display"', 'Georgia', 'serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        card: '14px',
+      },
+      boxShadow: {
+        card: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        'card-hover': '0 8px 25px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)',
+        soft: '0 2px 8px rgba(0,0,0,0.05)',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.4s ease-out',
+        'slide-up': 'slideUp 0.35s ease-out',
+        'stagger-in': 'fadeIn 0.3s ease-out both',
+      },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: '0', transform: 'translateY(6px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideUp: {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+    },
   },
-  plugins: []
+  plugins: [],
 };

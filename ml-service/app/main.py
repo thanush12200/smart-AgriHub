@@ -219,10 +219,10 @@ def _predict_plant_with_model(model_vector: np.ndarray, signals: Dict[str, float
             "message": "Tomato-specific visual cues detected from fruit/canopy color composition.",
         }
 
-    if confidence < 0.4 or margin < 0.03:
+    if confidence < 0.55 or margin < 0.08:
         return {
             "plant": "unknown",
-            "confidence": float(round(min(confidence, 0.39), 4)),
+            "confidence": float(round(min(confidence, 0.54), 4)),
             "healthStatus": "Uncertain - current model confidence is low",
             "careTips": [
                 "Capture one clear crop leaf or fruit cluster close-up.",
@@ -284,10 +284,10 @@ def _detect_plant_from_features(features: np.ndarray, signals: Dict[str, float])
             "message": "Tomato-specific visual cues detected (red fruit clusters with green canopy).",
         }
 
-    if confidence < 0.42 or margin < 0.01:
+    if confidence < 0.55 or margin < 0.06:
         return {
             "plant": "unknown",
-            "confidence": float(round(min(confidence, 0.4), 4)),
+            "confidence": float(round(min(confidence, 0.54), 4)),
             "healthStatus": "Uncertain - image is ambiguous for current model",
             "careTips": [
                 "Capture one crop/leaf closer with plain background.",

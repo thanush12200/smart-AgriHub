@@ -6,6 +6,56 @@ const { detectPlantWithGemini } = require('../services/geminiService');
 const PredictionLog = require('../models/PredictionLog');
 
 const allowedImageMimeTypes = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
+const unknownLabels = new Set(['', 'unknown', 'unidentified', 'na', 'n/a']);
+
+const normalizedPlant = (value) => String(value || '').trim().toLowerCase();
+const confidenceValue = (value) => {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(1, n > 1 ? n / 100 : n));
+};
+
+const isReliableDetection = (detection) => {
+  if (!detection || typeof detection !== 'object') return false;
+
+  const plant = normalizedPlant(detection.plant);
+  const confidence = confidenceValue(detection.confidence);
+  const commonName = normalizedPlant(detection.commonName);
+
+  if (!unknownLabels.has(plant) && confidence >= 0.55) return true;
+  if (unknownLabels.has(plant) && !unknownLabels.has(commonName) && confidence >= 0.45) return true;
+  return false;
+};
+
+const chooseDetection = (geminiDetection, mlDetection) => {
+  if (!geminiDetection && mlDetection) return mlDetection;
+  if (geminiDetection && !mlDetection) return geminiDetection;
+  if (!geminiDetection && !mlDetection) return null;
+
+  const geminiConfidence = confidenceValue(geminiDetection.confidence);
+  const mlConfidence = confidenceValue(mlDetection.confidence);
+  const geminiPlant = normalizedPlant(geminiDetection.plant);
+  const mlPlant = normalizedPlant(mlDetection.plant);
+  const geminiKnown = !unknownLabels.has(geminiPlant);
+  const mlKnown = !unknownLabels.has(mlPlant);
+
+  if (geminiKnown && geminiConfidence >= 0.55) return geminiDetection;
+  if (!geminiKnown && mlKnown && mlConfidence >= 0.78) {
+    return {
+      ...mlDetection,
+      message: 'Gemini confidence was low. Using high-confidence ML fallback result.'
+    };
+  }
+
+  if (geminiKnown && mlKnown && mlPlant !== geminiPlant && mlConfidence >= geminiConfidence + 0.2 && mlConfidence >= 0.82) {
+    return {
+      ...mlDetection,
+      message: 'Using ML result because it is significantly more confident than Gemini for this image.'
+    };
+  }
+
+  return geminiDetection;
+};
 
 const predictCrop = asyncHandler(async (req, res) => {
   const { soilType, rainfall, temperature, region } = req.body;
@@ -53,10 +103,15 @@ const detectPlantImage = asyncHandler(async (req, res) => {
     mimeType: req.file.mimetype
   };
 
-  let detection = await detectPlantWithGemini(payload);
-  if (!detection) {
-    detection = await invokeML('/predict/plant', payload);
+  const geminiDetection = await detectPlantWithGemini(payload);
+  let mlDetection = null;
+
+  if (!isReliableDetection(geminiDetection)) {
+    mlDetection = await invokeML('/predict/plant', payload);
   }
+
+  const detection = chooseDetection(geminiDetection, mlDetection);
+  if (!detection) throw new ApiError(StatusCodes.BAD_GATEWAY, 'Plant detection service is unavailable');
 
   await PredictionLog.create({
     user: req.user._id,

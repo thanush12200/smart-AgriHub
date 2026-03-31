@@ -159,12 +159,44 @@ const normalizeHistory = (history) => {
 
 const parseGeminiJson = (responseData) => {
   const text = extractGeminiText(responseData);
+  const cleaned = cleanJsonText(text);
 
-  try {
-    return JSON.parse(cleanJsonText(text));
-  } catch (error) {
-    throw new ApiError(StatusCodes.BAD_GATEWAY, 'Gemini returned invalid JSON output');
+  const tryParse = (value) => {
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const direct = tryParse(cleaned);
+  if (direct && typeof direct === 'object') return direct;
+
+  const jsonStart = cleaned.indexOf('{');
+  const jsonEnd = cleaned.lastIndexOf('}');
+  if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+    const extracted = cleaned.slice(jsonStart, jsonEnd + 1);
+    const repaired = extracted.replace(/,\s*([}\]])/g, '$1');
+    const parsed = tryParse(repaired);
+    if (parsed && typeof parsed === 'object') return parsed;
   }
+
+  // Light fallback for semi-structured text responses when strict JSON is not returned.
+  const cropNameMatch = cleaned.match(/(?:cropName|crop|plant)\s*[:=-]\s*([a-zA-Z0-9 _-]+)/i);
+  const confidenceMatch = cleaned.match(/confidence\s*[:=-]\s*([0-9]+(?:\.[0-9]+)?)/i);
+  if (cropNameMatch) {
+    return {
+      cropName: cropNameMatch[1].trim(),
+      confidence: confidenceMatch ? Number(confidenceMatch[1]) : 0.55,
+      healthStatus: 'Assessment available',
+      description: cleaned.slice(0, 700),
+      careTips: ['Use a clear close-up image in daylight for better precision.'],
+      detectedIssues: [],
+      topMatches: []
+    };
+  }
+
+  throw new ApiError(StatusCodes.BAD_GATEWAY, 'Gemini returned invalid JSON output');
 };
 
 const toDetectionShape = (raw, modelName) => {
@@ -419,16 +451,16 @@ const detectPlantWithGemini = async ({ imageBase64, mimeType }) => {
     }
   };
 
-  let detection = await runForModel(modelName, 8000);
+  let detection = await runForModel(modelName, 14000);
   if (detection) return detection;
 
   if (FALLBACK_MODEL && FALLBACK_MODEL !== modelName) {
-    detection = await runForModel(FALLBACK_MODEL, 15000);
+    detection = await runForModel(FALLBACK_MODEL, 22000);
     if (detection) return detection;
   }
 
   if (modelName !== 'gemini-2.5-flash' && FALLBACK_MODEL !== 'gemini-2.5-flash') {
-    detection = await runForModel('gemini-2.5-flash', 15000);
+    detection = await runForModel('gemini-2.5-flash', 22000);
     if (detection) return detection;
   }
 

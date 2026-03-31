@@ -2,6 +2,28 @@ import { useMemo, useState } from 'react';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
 
+const SendIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13" />
+    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+  </svg>
+);
+
+const MicIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+    <line x1="12" y1="19" x2="12" y2="22" />
+  </svg>
+);
+
+const SUGGESTIONS = [
+  { label: '🌾 Best crop for my soil?', text: 'What crop is best for black soil with moderate rainfall?' },
+  { label: '🍃 Leaf disease help', text: 'My plant leaves have yellow spots. What should I do?' },
+  { label: '💧 Fertilizer dosage', text: 'How much NPK fertilizer should I use for rice per acre?' },
+  { label: '🌦️ Season advice', text: 'What should I plant during the kharif season in Karnataka?' },
+];
+
 const ChatbotPage = () => {
   const { user } = useAuth();
   const [message, setMessage] = useState('');
@@ -19,10 +41,10 @@ const ChatbotPage = () => {
     [messages]
   );
 
-  const send = async () => {
-    if (!message.trim() || loading) return;
+  const sendMessage = async (text) => {
+    if (!text?.trim() || loading) return;
 
-    const userText = message.trim();
+    const userText = text.trim();
     const userMessage = { sender: 'user', text: userText };
     setMessages((prev) => [...prev, userMessage]);
     setLoading(true);
@@ -38,28 +60,21 @@ const ChatbotPage = () => {
         region: user?.region || 'India'
       });
 
-      const modelInfo = data.modelVersion ? `, model: ${data.modelVersion}` : '';
       setMessages((prev) => [
         ...prev,
-        {
-          sender: 'bot',
-          text: data.answer,
-          meta: `source: ${data.source}${modelInfo}`
-        }
+        { sender: 'bot', text: data.answer }
       ]);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
-        {
-          sender: 'bot',
-          text: 'Unable to process query right now. Please try again.',
-          meta: 'error'
-        }
+        { sender: 'bot', text: 'Sorry, I couldn\'t process that right now. Please try again.' }
       ]);
     } finally {
       setLoading(false);
     }
   };
+
+  const send = () => sendMessage(message);
 
   const handleEnterSend = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -85,34 +100,92 @@ const ChatbotPage = () => {
   };
 
   return (
-    <div className="card p-5 animate-fadeIn">
-      <p className="text-[10px] font-black uppercase tracking-[0.23em] text-emerald-700">Conversational AI</p>
-      <h2 className="font-display text-2xl font-bold text-slate-900">AI Chatbot for Farmers</h2>
-      <p className="text-sm text-slate-600">Context-aware assistant for crop, disease, fertilizer, and seasonal guidance.</p>
-
-      <div className="mt-4 h-96 overflow-y-auto rounded-2xl border border-slate-200 bg-slate-50 p-3">
-        {messages.length === 0 ? <p className="text-sm text-slate-500">Start with a farming question.</p> : null}
-        {messages.map((item, idx) => (
-          <div
-            key={`${item.sender}-${idx}`}
-            className={`my-2 max-w-[85%] rounded-2xl px-3 py-2 text-sm ${item.sender === 'user' ? 'ml-auto bg-emerald-600 text-white' : 'border border-slate-200 bg-white text-slate-800'}`}
-          >
-            <p className="whitespace-pre-wrap">{item.text}</p>
-            {item.meta ? <p className="mt-1 text-[10px] opacity-75">{item.meta}</p> : null}
-          </div>
-        ))}
+    <div className="animate-fadeIn">
+      {/* Header */}
+      <div className="mb-5">
+        <p className="section-label">Farm Assistant</p>
+        <h1 className="section-title mt-1">Ask anything about farming</h1>
+        <p className="section-subtitle">Get crop guidance, disease help, fertilizer dosage, and seasonal tips.</p>
       </div>
 
-      <div className="mt-3 grid gap-2 md:grid-cols-[1fr_auto_auto]">
-        <textarea
-          className="input min-h-12 resize-y"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleEnterSend}
-          placeholder="Type your question... (Press Enter to send)"
-        />
-        <button className="btn-secondary" onClick={startVoiceInput} type="button">Voice</button>
-        <button className="btn-primary" onClick={send} type="button" disabled={loading}>{loading ? 'Thinking...' : 'Send'}</button>
+      <div className="card overflow-hidden">
+        {/* Messages area */}
+        <div className="h-[26rem] overflow-y-auto p-5">
+          {messages.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <div className="mb-4 rounded-full bg-brand-50 p-4">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-brand-500">
+                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-slate-800">How can I help today?</p>
+              <p className="mt-1 text-xs text-slate-400">Pick a topic below or type your own question.</p>
+
+              {/* Suggestion chips */}
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
+                {SUGGESTIONS.map((s) => (
+                  <button
+                    key={s.label}
+                    type="button"
+                    className="rounded-full border border-surface-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-brand-300 hover:text-brand-600 hover:shadow-md hover:-translate-y-px"
+                    onClick={() => sendMessage(s.text)}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {messages.map((item, idx) => (
+            <div
+              key={`${item.sender}-${idx}`}
+              className={`my-2.5 max-w-[80%] ${item.sender === 'user' ? 'ml-auto' : ''}`}
+            >
+              <div
+                className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                  item.sender === 'user'
+                    ? 'bg-brand-500 text-white'
+                    : 'border border-surface-200 bg-surface-50 text-slate-700'
+                }`}
+              >
+                <p className="whitespace-pre-wrap">{item.text}</p>
+              </div>
+            </div>
+          ))}
+
+          {loading ? (
+            <div className="my-2.5 max-w-[80%]">
+              <div className="rounded-2xl border border-surface-200 bg-surface-50 px-4 py-3">
+                <div className="flex gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="h-2 w-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="h-2 w-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        {/* Input bar */}
+        <div className="border-t border-surface-200 bg-surface-50 p-4">
+          <div className="flex gap-2">
+            <textarea
+              className="input min-h-[44px] max-h-28 resize-none flex-1"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleEnterSend}
+              placeholder="Ask a farming question…"
+              rows={1}
+            />
+            <button className="btn-secondary shrink-0 px-3" onClick={startVoiceInput} type="button" title="Voice input">
+              <MicIcon />
+            </button>
+            <button className="btn-primary shrink-0 px-3" onClick={send} type="button" disabled={loading || !message.trim()} title="Send message">
+              <SendIcon />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -24,48 +24,58 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_8%_8%,#065f4622_0%,#0b1023_50%,#050816_100%)] px-5 py-8 text-white">
-      <div className="pointer-events-none absolute -left-20 -top-20 h-96 w-96 rounded-full bg-emerald-400/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-20 bottom-0 h-96 w-96 rounded-full bg-sky-500/15 blur-3xl" />
+    <div className="relative min-h-screen bg-surface-50 px-4 py-8">
+      <div className="relative mx-auto grid min-h-[90vh] max-w-5xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
+        {/* Left — brand messaging */}
+        <section className="animate-fadeIn">
+          <div className="mb-6 flex items-center gap-2">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-500">
+              <path d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 17 3.5 19 2c1 2 2 4.5 2 8c0 5.5-4.5 10-10 10Z" />
+              <path d="M2 21c0-3 1.9-5.5 4.5-6.3" />
+            </svg>
+            <span className="font-display text-xl text-slate-900">Smart Agri Hub</span>
+          </div>
 
-      <div className="relative mx-auto grid min-h-[92vh] max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-2">
-        <section>
-          <p className="mb-2 text-[11px] font-black uppercase tracking-[0.24em] text-emerald-200">Precision. Planning. Profitability.</p>
-          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-            Smart decisions for every acre, every day.
+          <h1 className="font-display text-4xl leading-tight text-slate-900 md:text-5xl">
+            Grow smarter,<br />not harder.
           </h1>
-          <p className="mt-4 max-w-lg text-slate-200/90">
-            Use weather intelligence, crop prediction, fertilizer optimization, and AI guidance from one unified platform.
+          <p className="mt-4 max-w-md text-slate-500">
+            Weather intelligence, crop prediction, fertilizer planning, and AI guidance — one platform built for modern farming.
           </p>
 
-          <div className="mt-7 grid max-w-md grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-200">Forecast</p>
-              <p className="mt-1 text-sm font-semibold">7-day alerts</p>
+          <div className="mt-8 flex gap-4">
+            <div className="rounded-card border border-surface-200 bg-white p-4 shadow-card">
+              <p className="text-xs font-semibold text-brand-500">Forecast</p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">7-day weather alerts</p>
             </div>
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-200">AI Models</p>
-              <p className="mt-1 text-sm font-semibold">Crop + NPK + Chat</p>
+            <div className="rounded-card border border-surface-200 bg-white p-4 shadow-card">
+              <p className="text-xs font-semibold text-accent-400">AI Models</p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">Crop + NPK + Chat</p>
             </div>
           </div>
         </section>
 
-        <section className="card p-7 md:p-8">
-          <h2 className="font-display text-2xl font-bold text-slate-900">Welcome back</h2>
-          <p className="mt-1 text-sm text-slate-600">Login to continue your farm intelligence workflow.</p>
+        {/* Right — login form */}
+        <section className="card p-7 md:p-8 animate-fadeIn">
+          <h2 className="font-display text-2xl text-slate-900">Welcome back</h2>
+          <p className="section-subtitle">Sign in to continue your farm workflow.</p>
 
-          <form className="mt-5 space-y-3" onSubmit={onSubmit}>
-            <input className="input" placeholder="Email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-            <input className="input" placeholder="Password" type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
-            <button className="btn-primary w-full" disabled={loading} type="submit">{loading ? 'Signing in...' : 'Login'}</button>
+          <form className="mt-6 space-y-4" onSubmit={onSubmit}>
+            <div>
+              <label className="field-label" htmlFor="login-email">Email address</label>
+              <input id="login-email" className="input" placeholder="you@example.com" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            </div>
+            <div>
+              <label className="field-label" htmlFor="login-password">Password</label>
+              <input id="login-password" className="input" placeholder="Enter your password" type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            </div>
+            {error ? <p className="rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-600">{error}</p> : null}
+            <button className="btn-primary w-full" disabled={loading} type="submit">{loading ? 'Signing in…' : 'Sign in'}</button>
           </form>
 
-          <p className="mt-4 text-sm text-slate-600">
-            New here? <Link className="font-semibold text-emerald-700" to="/signup">Create account</Link>
-          </p>
-          <p className="mt-2 text-xs text-slate-500">
-            Admin users can login here using admin credentials and will be redirected to the Admin panel automatically.
+          <p className="mt-5 text-sm text-slate-500">
+            New here?{' '}
+            <Link className="font-semibold text-brand-500 hover:text-brand-600 transition-colors" to="/signup">Create an account</Link>
           </p>
         </section>
       </div>
