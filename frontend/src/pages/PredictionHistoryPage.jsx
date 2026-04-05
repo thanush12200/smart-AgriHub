@@ -1,0 +1,132 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axiosClient';
+
+const Badge = ({ type }) => {
+  const isCrop = type === 'crop';
+  return (
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest ${isCrop ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-sky-50 text-sky-700 border-sky-200'}`}>
+      {type}
+    </span>
+  );
+};
+
+const PredictionHistoryPage = () => {
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [filter, setFilter] = useState('all');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const params = filter !== 'all' ? { type: filter } : {};
+        const { data } = await api.get('/predictions/history', { params });
+        setLogs(data.logs);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to load history');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLogs();
+  }, [filter]);
+
+  const handleReUse = (type, input) => {
+    navigate(type === 'crop' ? '/crop-prediction' : '/fertilizer', { state: { prefill: input } });
+  };
+
+  return (
+    <div className="mx-auto max-w-5xl space-y-6 animate-fadeIn">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl text-slate-900">Prediction History</h1>
+          <p className="mt-1 text-sm text-slate-500">View your past crop and fertilizer analyses.</p>
+        </div>
+        <select className="input w-48" value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="all">All Predictions</option>
+          <option value="crop">Crop Only</option>
+          <option value="fertilizer">Fertilizer Only</option>
+        </select>
+      </div>
+
+      {error ? <div className="p-4 text-red-600 bg-red-50 rounded-xl">{error}</div> : null}
+
+      {loading ? (
+        <div className="card p-12 text-center text-slate-500">Loading history...</div>
+      ) : logs.length === 0 ? (
+        <div className="card p-12 text-center text-slate-500">
+          <p>No predictions found.</p>
+          <div className="mt-4 flex justify-center gap-3">
+            <button className="btn-primary" onClick={() => navigate('/crop-prediction')}>New Crop Prediction</button>
+            <button className="btn-secondary" onClick={() => navigate('/fertilizer')}>New Fertilizer Plan</button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {logs.map((log) => (
+            <div key={log._id} className="card p-5 grid gap-4 items-start md:grid-cols-[1.5fr_2fr_auto]">
+              
+              {/* Info Column */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge type={log.type} />
+                  <span className="text-[10px] text-slate-400">{new Date(log.createdAt).toLocaleString()}</span>
+                </div>
+                <p className="text-xl font-display font-bold text-slate-900">
+                  {log.type === 'crop' ? log.output.crop : log.output.fertilizer}
+                </p>
+                {log.confidence && (
+                  <div className="mt-2 w-32">
+                    <div className="flex justify-between text-[10px] text-slate-500 mb-0.5">
+                      <span>Conf:</span><span>{(log.confidence * 100).toFixed(0)}%</span>
+                    </div>
+                    <div className="h-1.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                      <div className="h-full bg-brand-500" style={{ width: `${log.confidence * 100}%` }} />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Input Data Column */}
+              <div className="rounded-xl border border-surface-200 bg-surface-50 p-3 text-xs text-slate-600">
+                <p className="font-semibold text-slate-800 mb-1 tracking-wide uppercase text-[10px]">Inputs provided</p>
+                {log.type === 'crop' ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    <p>N: {log.input.npk?.n}</p>
+                    <p>Temp: {log.input.weather?.temperature}</p>
+                    <p>P: {log.input.npk?.p}</p>
+                    <p>Hum: {log.input.weather?.humidity}</p>
+                    <p>K: {log.input.npk?.k}</p>
+                    <p>pH: {log.input.soil?.ph}</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <p>Crop: {log.input.crop}</p>
+                    <p>N: {log.input.npk?.n}</p>
+                    <p>P: {log.input.npk?.p}</p>
+                    <p>K: {log.input.npk?.k}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Column */}
+              <div className="flex flex-col gap-2 self-center">
+                <button 
+                  className="btn-secondary text-xs px-3 py-1.5" 
+                  onClick={() => handleReUse(log.type, log.input)}
+                >
+                  Reuse Inputs
+                </button>
+              </div>
+
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PredictionHistoryPage;

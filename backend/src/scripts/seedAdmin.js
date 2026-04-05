@@ -12,19 +12,34 @@ const run = async () => {
   const exists = await User.findOne({ email });
   if (exists) {
     console.log(`Admin already exists: ${email}`);
-    process.exit(0);
+  } else {
+    await User.create({
+      name: 'Platform Admin',
+      email,
+      password,
+      role: 'admin',
+      region: 'India',
+      language: 'en'
+    });
+    console.log(`Admin created: ${email}`);
   }
 
-  await User.create({
-    name: 'Platform Admin',
-    email,
-    password,
-    role: 'admin',
-    region: 'India',
-    language: 'en'
-  });
+  // Seed Demo User
+  const demoEmail = 'demo@agrihub.com';
+  const demoExists = await User.findOne({ email: demoEmail });
+  if (!demoExists) {
+    await User.create({
+      name: 'Demo Farmer',
+      email: demoEmail,
+      password: 'DemoPassword123!',
+      role: 'farmer',
+      region: 'Punjab',
+      language: 'en',
+      isDemo: true
+    });
+    console.log(`Demo farmer created: ${demoEmail}`);
+  }
 
-  console.log(`Admin created: ${email}`);
   process.exit(0);
 };
 

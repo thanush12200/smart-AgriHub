@@ -70,7 +70,23 @@ const LoginPage = () => {
               <input id="login-password" className="input" placeholder="Enter your password" type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
             </div>
             {error ? <p className="rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-600">{error}</p> : null}
-            <button className="btn-primary w-full" disabled={loading} type="submit">{loading ? 'Signing in…' : 'Sign in'}</button>
+            <div className="flex flex-col gap-2">
+              <button className="btn-primary w-full" disabled={loading} type="submit">{loading ? 'Signing in…' : 'Sign in'}</button>
+              
+              <div className="relative my-2">
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-surface-200"></div></div>
+                <div className="relative flex justify-center text-sm"><span className="bg-[var(--bg-card)] px-2 text-slate-500">Or continue with</span></div>
+              </div>
+
+              <button 
+                type="button"
+                className="btn-secondary w-full" 
+                disabled={loading} 
+                onClick={() => setForm({ email: 'demo@agrihub.com', password: 'DemoPassword123!' })}
+              >
+                Use Demo Account
+              </button>
+            </div>
           </form>
 
           <p className="mt-5 text-sm text-slate-500">

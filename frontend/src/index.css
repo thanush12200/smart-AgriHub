@@ -2,15 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    
+    --bg-main: #faf9f7;
+    --bg-card: #ffffff;
+    
+    --border-light: #e8e5df;
+    --border-strong: #d4d0c8;
+
+    --brand-50: #f0faf4;
+    --brand-100: #d1f0dd;
+    --brand-500: #1a7a4c;
+    --brand-600: #14613c;
+
+    --surface-0: #ffffff;
+    --surface-50: #faf9f7;
+    --surface-100: #f3f1ed;
+    --surface-200: #e8e5df;
+    --surface-300: #d4d0c8;
+  }
+
+  [data-theme="dark"] {
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+
+    --border-light: #334155;
+    --border-strong: #475569;
+
+    --brand-50: #022c22;
+    --brand-100: #064e3b;
+    --brand-500: #10b981;
+    --brand-600: #34d399;
+
+    --surface-0: #1e293b;
+    --surface-50: #0f172a;
+    --surface-100: #1e293b;
+    --surface-200: #334155;
+    --surface-300: #475569;
+  }
+}
+
 /* ── Base ────────────────────────────────────────────── */
 
 body {
   margin: 0;
   min-height: 100vh;
   font-family: 'Inter', system-ui, sans-serif;
-  background: #faf9f7;
-  color: #1e293b;
+  background: var(--bg-main);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Subtle grain → adds tactile depth without being distracting */
@@ -28,8 +77,8 @@ body::before {
 /* Clean, warm — not glassmorphism blobs */
 
 .card {
-  @apply rounded-[14px] border border-surface-200 bg-white shadow-soft;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  @apply rounded-[14px] shadow-soft bg-[var(--bg-card)] border border-[var(--border-light)];
+  transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {
@@ -39,10 +88,10 @@ body::before {
 /* ── Form Inputs ─────────────────────────────────────── */
 
 .input {
-  @apply w-full rounded-lg border border-surface-300 bg-white px-3.5 py-2.5 text-sm text-slate-900
-    placeholder:text-slate-400
-    focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  @apply w-full rounded-lg px-3.5 py-2.5 text-sm bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-strong)]
+    placeholder:text-[var(--text-muted)]
+    focus:outline-none focus:border-[var(--brand-500)] focus:ring-1 focus:ring-[var(--brand-500)];
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.3s ease;
 }
 
 /* ── Buttons ─────────────────────────────────────────── */
@@ -54,16 +103,16 @@ body::before {
 }
 
 .btn-primary {
-  @apply btn bg-brand-500 text-white shadow-sm
-    hover:bg-brand-600 hover:shadow-md hover:-translate-y-px
+  @apply btn text-white shadow-sm bg-[var(--brand-500)]
+    hover:bg-[var(--brand-600)] hover:shadow-md hover:-translate-y-px
     active:translate-y-0 active:shadow-sm
     disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-sm;
 }
 
 .btn-secondary {
-  @apply btn border border-surface-300 bg-white text-slate-700
-    hover:bg-surface-50 hover:border-surface-200 hover:shadow-sm
-    active:bg-surface-100;
+  @apply btn bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-strong)]
+    hover:bg-[var(--surface-100)] hover:border-[var(--border-light)] hover:shadow-sm
+    active:bg-[var(--surface-200)];
 }
 
 .btn-danger {

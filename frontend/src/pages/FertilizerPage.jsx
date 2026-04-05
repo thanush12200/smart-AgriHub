@@ -89,7 +89,44 @@ const FertilizerPage = () => {
                 </div>
               </div>
 
-              <div>
+              <div className="rounded-xl border border-surface-200 bg-surface-50 p-4 mt-6">
+                <p className="section-label">Soil Health Report</p>
+                
+                <div className="mt-3 space-y-3">
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="font-bold text-brand-600 w-8">N</span>
+                    <div className="flex-1 h-3 rounded-full bg-slate-200 overflow-hidden">
+                      <div className="h-full bg-brand-500" style={{ width: `${Math.min(100, (input.npk.n / 100) * 100)}%` }} />
+                    </div>
+                    <span className="w-12 text-right text-slate-500">{input.npk.n}</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="font-bold text-sky-500 w-8">P</span>
+                    <div className="flex-1 h-3 rounded-full bg-slate-200 overflow-hidden">
+                      <div className="h-full bg-sky-500" style={{ width: `${Math.min(100, (input.npk.p / 100) * 100)}%` }} />
+                    </div>
+                    <span className="w-12 text-right text-slate-500">{input.npk.p}</span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="font-bold text-accent-500 w-8">K</span>
+                    <div className="flex-1 h-3 rounded-full bg-slate-200 overflow-hidden">
+                      <div className="h-full bg-accent-500" style={{ width: `${Math.min(100, (input.npk.k / 100) * 100)}%` }} />
+                    </div>
+                    <span className="w-12 text-right text-slate-500">{input.npk.k}</span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 pt-3 border-t border-surface-200 text-xs text-slate-600">
+                  <p><span className="font-semibold text-slate-900">Score Out of 100:</span> {Math.round((input.npk.n + input.npk.p + input.npk.k) / 3)}/100</p>
+                  <p className="mt-1">
+                    {input.npk.n < 30 ? 'Tip: Your soil is low in Nitrogen. Consider planting legumes.' : 'Great nitrogen levels!'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6">
                 <p className="text-xs font-semibold text-slate-500 mb-2">🌿 Organic Alternatives</p>
                 {result.organicAlternatives.map((alt) => (
                   <div key={alt} className="stagger-item mb-1.5 flex items-center gap-2 rounded-lg border border-brand-100 bg-brand-50/40 px-3 py-2.5 text-sm text-brand-800">

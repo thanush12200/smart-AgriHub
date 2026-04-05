@@ -126,8 +126,8 @@ const MarketplacePage = () => {
     event.preventDefault();
     setCheckoutError('');
 
-    const requiredFields = ['fullName', 'phone', 'addressLine', 'city', 'state', 'pincode'];
-    const missing = requiredFields.find((field) => !String(checkoutForm[field]).trim());
+    const ObjectKeys = ['fullName', 'phone', 'addressLine', 'city', 'state', 'pincode'];
+    const missing = ObjectKeys.find((field) => !String(checkoutForm[field]).trim());
     if (missing) {
       setCheckoutError('Please fill all required checkout fields.');
       return;
@@ -145,20 +145,30 @@ const MarketplacePage = () => {
 
     setCheckoutLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 700));
+      const itemsPayload = cartItems.map(item => ({
+        productCode: item.productCode || item.id, // Fallback to id if productCode is missing
+        quantity: item.quantity
+      }));
+      
+      const addressString = `${checkoutForm.fullName}, ${checkoutForm.addressLine}, ${checkoutForm.city}, ${checkoutForm.state} - ${checkoutForm.pincode}. Phone: ${checkoutForm.phone}`;
 
-      const orderId = `SAH-${Date.now()}`;
-      setLastOrder({
-        orderId,
-        itemCount,
-        grandTotal,
-        placedAt: new Date().toLocaleString(),
+      const { data } = await api.post('/orders', {
+        items: itemsPayload,
+        deliveryAddress: addressString,
         paymentMode: checkoutForm.paymentMode
+      });
+
+      setLastOrder({
+        orderId: data.order.orderId,
+        itemCount,
+        grandTotal: data.order.totalAmount,
+        placedAt: new Date(data.order.createdAt).toLocaleString(),
+        paymentMode: data.order.paymentMode
       });
 
       clearCart();
       setCheckoutOpen(false);
-      setCartNotice({ text: `Order placed successfully. Order ID: ${orderId}`, type: 'success' });
+      setCartNotice({ text: `Order placed successfully. Order ID: ${data.order.orderId}`, type: 'success' });
       setCheckoutForm({
         fullName: '',
         phone: '',
@@ -168,8 +178,11 @@ const MarketplacePage = () => {
         pincode: '',
         paymentMode: 'cod'
       });
+    } catch (err) {
+      setCheckoutError(err.response?.data?.message || 'Failed to place order.');
     } finally {
       setCheckoutLoading(false);
+      loadProducts(); // Refresh products to show updated stock
     }
   };
 

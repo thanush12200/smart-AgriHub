@@ -17,6 +17,10 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const governmentSchemeRoutes = require('./routes/governmentSchemeRoutes');
 const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const predictionRoutes = require('./routes/predictionRoutes');
+const journalRoutes = require('./routes/journalRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
 
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
@@ -73,6 +77,10 @@ app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/schemes', governmentSchemeRoutes);
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/orders', orderRoutes);
+app.use('/api/v1/predictions', predictionRoutes);
+app.use('/api/v1/journal', journalRoutes);
+app.use('/api/v1/announcements', announcementRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
