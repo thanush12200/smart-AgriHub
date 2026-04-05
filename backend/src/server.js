@@ -14,11 +14,15 @@ const start = async () => {
   const jwtSecret = process.env.JWT_SECRET || '';
   const WEAK_DEFAULTS = ['change_me_super_secret', 'secret', 'jwt_secret', ''];
   if (WEAK_DEFAULTS.includes(jwtSecret) || jwtSecret.length < 32) {
-    logger.error(
-      'FATAL: JWT_SECRET is missing, default, or too short (min 32 chars). ' +
-        'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(48).toString(\'hex\'))"'
-    );
-    process.exit(1);
+    if (process.env.NODE_ENV === 'production') {
+      logger.error(
+        'FATAL: JWT_SECRET is missing, default, or too short (min 32 chars). ' +
+          'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(48).toString(\'hex\'))"'
+      );
+      process.exit(1);
+    } else {
+      logger.warn('WARNING: Using weak or default JWT_SECRET in development.');
+    }
   }
 
   await connectDB();
