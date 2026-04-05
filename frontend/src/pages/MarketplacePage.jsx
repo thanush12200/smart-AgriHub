@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import api from '../api/axiosClient';
 import { useCart } from '../context/CartContext';
+import { formatINR } from '../utils/formatINR';
 
-const formatINR = (value) =>
-  new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0
-  }).format(value);
+
 
 const MarketplacePage = () => {
   const [products, setProducts] = useState([]);

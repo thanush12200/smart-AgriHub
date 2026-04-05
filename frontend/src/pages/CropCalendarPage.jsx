@@ -28,11 +28,12 @@ const CropCalendarPage = () => {
   return (
     <div className="mx-auto max-w-6xl space-y-6 animate-fadeIn">
       <div className="mb-8">
-        <p className="section-label">Planing Guide</p>
+        <p className="section-label">Planning Guide</p>
         <h1 className="font-display text-4xl text-slate-900 mt-1">Sowing & Harvest Calendar</h1>
         <p className="mt-2 text-slate-600 max-w-2xl">
-          Plan your agricultural activities with our interactive crop calendar. Visualize the best months for sowing and harvesting major Indian crops based on region and season.
+          Reference guide for planning agricultural activities. Shows approximate sowing and harvesting months for major Indian crops by region and season.
         </p>
+        <p className="mt-1 text-xs text-slate-400">Timings are indicative and may vary based on local conditions.</p>
       </div>
 
       <div className="card p-5">

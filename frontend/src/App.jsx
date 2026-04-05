@@ -21,7 +21,7 @@ import PredictionHistoryPage from './pages/PredictionHistoryPage';
 
 // Phase 2 Pages
 import JournalPage from './pages/JournalPage';
-import MandiPricesPage from './pages/MandiPricesPage';
+
 import CropCalendarPage from './pages/CropCalendarPage';
 
 // Phase 4
@@ -62,7 +62,7 @@ const App = () => {
 
         {/* Phase 2 Routes */}
         <Route path="/journal" element={<ProtectedRoute><Shell><JournalPage /></Shell></ProtectedRoute>} />
-        <Route path="/mandi-prices" element={<ProtectedRoute><Shell><MandiPricesPage /></Shell></ProtectedRoute>} />
+
         <Route path="/crop-calendar" element={<ProtectedRoute><Shell><CropCalendarPage /></Shell></ProtectedRoute>} />
 
         <Route path="/admin" element={<ProtectedRoute roles={['admin']}><Shell><AdminPage /></Shell></ProtectedRoute>} />

@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axiosClient';
+import Badge from '../components/Badge';
+import { formatINR } from '../utils/formatINR';
 
-const Badge = ({ status }) => {
-  const colors = {
-    placed: 'bg-blue-50 text-blue-700 border-blue-200',
-    confirmed: 'bg-amber-50 text-amber-700 border-amber-200',
-    shipped: 'bg-purple-50 text-purple-700 border-purple-200',
-    delivered: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    cancelled: 'bg-red-50 text-red-700 border-red-200',
-  };
-  const cls = colors[status] || colors.placed;
-  return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider ${cls}`}>
-      {status}
-    </span>
-  );
+const STATUS_COLORS = {
+  placed: 'blue',
+  confirmed: 'amber',
+  shipped: 'purple',
+  delivered: 'green',
+  cancelled: 'red',
 };
 
 const OrdersPage = () => {
@@ -36,8 +30,6 @@ const OrdersPage = () => {
     fetchOrders();
   }, []);
 
-  const formatINR = (v) =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v);
 
   if (loading) return <div className="p-8 text-center text-slate-500">Loading orders...</div>;
   if (error) return <div className="p-4 text-red-600 bg-red-50 rounded-xl">{error}</div>;
@@ -71,7 +63,7 @@ const OrdersPage = () => {
                   <p className="text-sm font-bold text-brand-600">{formatINR(order.totalAmount)}</p>
                 </div>
                 <div>
-                  <Badge status={order.status} />
+                  <Badge color={STATUS_COLORS[order.status] || 'slate'}>{order.status}</Badge>
                 </div>
               </div>
 
@@ -88,7 +80,7 @@ const OrdersPage = () => {
                   ))}
                 </div>
                 
-                <div className="mt-5pt-4 border-t border-slate-100 text-sm flex gap-12">
+                <div className="mt-5 pt-4 border-t border-slate-100 text-sm flex gap-12">
                   <div>
                     <span className="font-semibold text-slate-900">Delivery Address: </span>
                     <span className="text-slate-600">{order.deliveryAddress}</span>

@@ -1,15 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosClient';
+import Badge from '../components/Badge';
 
-const Badge = ({ type }) => {
-  const isCrop = type === 'crop';
-  return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest ${isCrop ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-sky-50 text-sky-700 border-sky-200'}`}>
-      {type}
-    </span>
-  );
-};
+
 
 const PredictionHistoryPage = () => {
   const [logs, setLogs] = useState([]);
@@ -71,7 +65,7 @@ const PredictionHistoryPage = () => {
               {/* Info Column */}
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge type={log.type} />
+                  <Badge color={log.type === 'crop' ? 'green' : 'sky'}>{log.type}</Badge>
                   <span className="text-[10px] text-slate-400">{new Date(log.createdAt).toLocaleString()}</span>
                 </div>
                 <p className="text-xl font-display font-bold text-slate-900">

@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useNotifications } from '../context/NotificationContext';
+import { useTheme } from '../context/ThemeContext';
 
 const LeafIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-500">
@@ -22,12 +24,6 @@ const CloseIcon = () => (
   </svg>
 );
 
-const UserIcon = () => (
-  <div className="h-7 w-7 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold text-xs ring-2 ring-transparent transition hover:ring-brand-200">
-    U
-  </div>
-);
-
 const BellIcon = ({ count }) => (
   <div className="relative p-1 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -42,8 +38,35 @@ const BellIcon = ({ count }) => (
   </div>
 );
 
-import { useNotifications } from '../context/NotificationContext';
-import { useTheme } from '../context/ThemeContext';
+/* ── Shared notification dropdown (used in both desktop & mobile) ── */
+const NotificationDropdown = ({ notifications, unreadCount, markAsRead, markAllAsRead, onClose }) => (
+  <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border border-slate-200 bg-white shadow-xl z-50 animate-fadeIn overflow-hidden flex flex-col max-h-[80vh]">
+    <div className="flex items-center justify-between bg-slate-50 p-3 border-b border-slate-100 flex-shrink-0">
+      <p className="font-semibold text-sm text-slate-900">Notifications</p>
+      {unreadCount > 0 && <button className="text-xs text-brand-600 hover:text-brand-700" onClick={markAllAsRead}>Mark all read</button>}
+    </div>
+    <div className="overflow-y-auto p-2 space-y-1">
+      {notifications.length === 0 ? (
+        <p className="text-center text-xs text-slate-500 py-4">No notifications yet.</p>
+      ) : (
+        notifications.map(notif => (
+          <div
+            key={notif._id}
+            onClick={() => { markAsRead(notif._id); onClose(); }}
+            className={`rounded-lg p-3 text-left cursor-pointer transition ${notif.isRead ? 'opacity-70 hover:bg-slate-50' : 'bg-brand-50/30 hover:bg-brand-50'}`}
+          >
+            <div className="flex justify-between items-start gap-2">
+              <p className="text-sm font-semibold text-slate-900 leading-tight">{notif.title}</p>
+              {!notif.isRead && <span className="h-2 w-2 rounded-full bg-brand-500 flex-shrink-0 mt-1"></span>}
+            </div>
+            <p className="text-xs text-slate-600 mt-1 line-clamp-2">{notif.body}</p>
+            <p className="text-[10px] text-slate-400 mt-2">{notif.date}</p>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+);
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -81,7 +104,6 @@ const Navbar = () => {
     { to: '/crop-prediction', label: 'Crops' },
     { to: '/fertilizer', label: 'Fertilizer' },
     { to: '/crop-calendar', label: 'Calendar' },
-    { to: '/mandi-prices', label: 'Markets' },
     { to: '/chatbot', label: 'Assistant' },
     { to: '/marketplace', label: `Shop${itemCount ? ` (${itemCount})` : ''}` },
   ];
@@ -118,12 +140,11 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Right side: user + logout */}
+        {/* Right side: theme + notifications + user dropdown */}
         <div className="hidden items-center gap-3 lg:flex">
-          
-          <button 
-            type="button" 
-            onClick={toggleTheme} 
+          <button
+            type="button"
+            onClick={toggleTheme}
             className="p-1.5 text-slate-500 hover:text-slate-900 transition-colors focus:outline-none rounded-md"
             title="Toggle theme"
           >
@@ -135,41 +156,21 @@ const Navbar = () => {
               <button type="button" onClick={() => setNotifOpen(!notifOpen)} className="focus:outline-none">
                 <BellIcon count={unreadCount} />
               </button>
-              
               {notifOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border border-slate-200 bg-white shadow-xl z-50 animate-fadeIn overflow-hidden flex flex-col max-h-[80vh]">
-                  <div className="flex items-center justify-between bg-slate-50 p-3 border-b border-slate-100 flex-shrink-0">
-                    <p className="font-semibold text-sm text-slate-900">Notifications</p>
-                    {unreadCount > 0 && <button className="text-xs text-brand-600 hover:text-brand-700" onClick={markAllAsRead}>Mark all read</button>}
-                  </div>
-                  <div className="overflow-y-auto p-2 space-y-1">
-                    {notifications.length === 0 ? (
-                      <p className="text-center text-xs text-slate-500 py-4">No notifications yet.</p>
-                    ) : (
-                      notifications.map(notif => (
-                        <div 
-                          key={notif._id} 
-                          onClick={() => { markAsRead(notif._id); setNotifOpen(false); }}
-                          className={`rounded-lg p-3 text-left cursor-pointer transition ${notif.isRead ? 'opacity-70 hover:bg-slate-50' : 'bg-brand-50/30 hover:bg-brand-50'}`}
-                        >
-                          <div className="flex justify-between items-start gap-2">
-                            <p className="text-sm font-semibold text-slate-900 leading-tight">{notif.title}</p>
-                            {!notif.isRead && <span className="h-2 w-2 rounded-full bg-brand-500 flex-shrink-0 mt-1"></span>}
-                          </div>
-                          <p className="text-xs text-slate-600 mt-1 line-clamp-2">{notif.body}</p>
-                          <p className="text-[10px] text-slate-400 mt-2">{notif.date}</p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
+                <NotificationDropdown
+                  notifications={notifications}
+                  unreadCount={unreadCount}
+                  markAsRead={markAsRead}
+                  markAllAsRead={markAllAsRead}
+                  onClose={() => setNotifOpen(false)}
+                />
               )}
             </div>
           )}
 
           <div className="relative ml-2" ref={dropdownRef}>
             {user?.name && (
-              <button 
+              <button
                 className="flex items-center gap-2 text-xs text-slate-600 hover:text-slate-900 focus:outline-none"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
@@ -209,37 +210,20 @@ const Navbar = () => {
         {/* Mobile toggle */}
         <div className="flex items-center gap-3 lg:hidden">
           {user && (
-            <button type="button" onClick={() => setNotifOpen(!notifOpen)} className="focus:outline-none text-slate-500 relative">
-              <BellIcon count={unreadCount} />
+            <div className="relative" ref={notifRef}>
+              <button type="button" onClick={() => setNotifOpen(!notifOpen)} className="focus:outline-none text-slate-500">
+                <BellIcon count={unreadCount} />
+              </button>
               {notifOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border border-slate-200 bg-white shadow-xl z-50 animate-fadeIn overflow-hidden flex flex-col max-h-[80vh] text-left">
-                  <div className="flex items-center justify-between bg-slate-50 p-3 border-b border-slate-100 flex-shrink-0">
-                    <p className="font-semibold text-sm text-slate-900">Notifications</p>
-                    {unreadCount > 0 && <button className="text-xs text-brand-600 hover:text-brand-700" onClick={markAllAsRead}>Mark all read</button>}
-                  </div>
-                  <div className="overflow-y-auto p-2 space-y-1 bg-white">
-                    {notifications.length === 0 ? (
-                      <p className="text-center text-xs text-slate-500 py-4">No notifications yet.</p>
-                    ) : (
-                      notifications.map(notif => (
-                        <div 
-                          key={notif._id} 
-                          onClick={() => { markAsRead(notif._id); setNotifOpen(false); }}
-                          className={`rounded-lg p-3 text-left cursor-pointer transition ${notif.isRead ? 'opacity-70 hover:bg-slate-50' : 'bg-brand-50/30 hover:bg-brand-50'}`}
-                        >
-                          <div className="flex justify-between items-start gap-2">
-                            <p className="text-sm font-semibold text-slate-900 leading-tight">{notif.title}</p>
-                            {!notif.isRead && <span className="h-2 w-2 rounded-full bg-brand-500 flex-shrink-0 mt-1"></span>}
-                          </div>
-                          <p className="text-xs text-slate-600 mt-1 line-clamp-2">{notif.body}</p>
-                          <p className="text-[10px] text-slate-400 mt-2">{notif.date}</p>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
+                <NotificationDropdown
+                  notifications={notifications}
+                  unreadCount={unreadCount}
+                  markAsRead={markAsRead}
+                  markAllAsRead={markAllAsRead}
+                  onClose={() => setNotifOpen(false)}
+                />
               )}
-            </button>
+            </div>
           )}
 
           <button
