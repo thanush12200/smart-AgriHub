@@ -66,7 +66,7 @@ const getWeatherBundle = async (region) => {
     if (base.includes('weatherapi.com')) {
       const currentUrl = `${base}/current.json?key=${key}&q=${encodeURIComponent(region)}&aqi=no`;
       const forecastUrl = `${base}/forecast.json?key=${key}&q=${encodeURIComponent(region)}&days=7&aqi=no&alerts=yes`;
-      const [currentRes, forecastRes] = await Promise.all([axios.get(currentUrl), axios.get(forecastUrl)]);
+      const [currentRes, forecastRes] = await Promise.all([axios.get(currentUrl, { timeout: 3000 }), axios.get(forecastUrl, { timeout: 3000 })]);
 
       const current = {
         region: currentRes.data.location.name,
@@ -91,7 +91,7 @@ const getWeatherBundle = async (region) => {
     const currentUrl = `${base}/weather?q=${encodeURIComponent(region)}&appid=${key}`;
     const forecastUrl = `${base}/forecast?q=${encodeURIComponent(region)}&appid=${key}`;
 
-    const [currentRes, forecastRes] = await Promise.all([axios.get(currentUrl), axios.get(forecastUrl)]);
+    const [currentRes, forecastRes] = await Promise.all([axios.get(currentUrl, { timeout: 3000 }), axios.get(forecastUrl, { timeout: 3000 })]);
 
     const current = {
       region: currentRes.data.name,

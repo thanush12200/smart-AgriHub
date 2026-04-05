@@ -63,9 +63,11 @@ app.use(
   })
 );
 
-app.get('/health', (req, res) => {
+const healthCheck = (req, res) => {
   res.status(200).json({ status: 'ok', service: 'smart-agri-backend' });
-});
+};
+app.get('/health', healthCheck);
+app.get('/api/v1/health', healthCheck);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1/auth', authRoutes);
