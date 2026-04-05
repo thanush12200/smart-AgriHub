@@ -77,9 +77,12 @@ const predictCrop = asyncHandler(async (req, res) => {
     user: req.user._id,
     type: 'crop',
     input: payload,
-    output: prediction.recommendations,
-    confidence: prediction.confidence,
-    modelVersion: prediction.modelVersion || 'v1'
+    output: prediction?.recommendations || prediction || { status: 'no_data' },
+    confidence: prediction?.confidence || 0,
+    modelVersion: prediction?.modelVersion || 'v1'
+  }).catch((err) => {
+    // Non-blocking log failure
+    console.error('Failed to save prediction log:', err.message);
   });
 
   res.status(StatusCodes.OK).json(prediction);
