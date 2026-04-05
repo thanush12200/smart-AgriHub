@@ -35,5 +35,17 @@ services:
         sync: false
       - key: WEATHER_API_KEY
         sync: false
+      - key: WEATHER_API_BASE
+        value: https://api.openweathermap.org/data/2.5
       - key: GEMINI_API_KEY
         sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_FALLBACK_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_CHAT_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_CHAT_FALLBACK_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta
