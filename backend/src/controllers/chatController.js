@@ -4,24 +4,7 @@ const ApiError = require('../utils/ApiError');
 const { invokeML } = require('../services/mlClient');
 const { askChatWithGemini } = require('../services/geminiService');
 const ChatLog = require('../models/ChatLog');
-
-const normalizeHistory = (history) => {
-  if (!Array.isArray(history)) return [];
-
-  return history
-    .map((item) => {
-      const role = item?.role === 'model' ? 'model' : 'user';
-      const parts = Array.isArray(item?.parts)
-        ? item.parts
-            .map((part) => ({ text: String(part?.text || '').trim() }))
-            .filter((part) => part.text)
-        : [];
-
-      if (!parts.length) return null;
-      return { role, parts };
-    })
-    .filter(Boolean);
-};
+const { normalizeHistory } = require('../utils/normalizeHistory');
 
 const askChatbot = asyncHandler(async (req, res) => {
   const { message, prompt, context = [], history = [], language, region } = req.body;

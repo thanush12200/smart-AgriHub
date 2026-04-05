@@ -10,7 +10,9 @@ const initSocket = (httpServer) => {
 
   io = new Server(httpServer, {
     cors: {
-      origin: configuredOrigins.length ? configuredOrigins : '*',
+      origin: configuredOrigins.length
+        ? configuredOrigins
+        : ['http://localhost:5173', 'http://127.0.0.1:5173'],
       methods: ['GET', 'POST']
     }
   });

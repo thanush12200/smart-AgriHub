@@ -136,26 +136,7 @@ const extractGeminiText = (responseData) => {
 
 const uniqueModels = (models) => [...new Set(models.filter(Boolean))];
 
-const normalizeHistory = (history) => {
-  if (!Array.isArray(history)) return [];
-
-  return history
-    .map((item) => {
-      const role = item?.role === 'model' ? 'model' : 'user';
-      const parts = Array.isArray(item?.parts)
-        ? item.parts
-            .map((part) => String(part?.text || '').trim())
-            .filter(Boolean)
-            .slice(0, 2)
-            .map((text) => ({ text: text.slice(0, 900) }))
-        : [];
-
-      if (!parts.length) return null;
-      return { role, parts };
-    })
-    .filter(Boolean)
-    .slice(-16);
-};
+const { normalizeHistory } = require('../utils/normalizeHistory');
 
 const parseGeminiJson = (responseData) => {
   const text = extractGeminiText(responseData);

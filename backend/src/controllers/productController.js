@@ -3,8 +3,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const Product = require('../models/Product');
 const { ensureProductsSeeded } = require('../services/productService');
-
-const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const { escapeRegex } = require('../utils/escapeRegex');
 
 const mapProduct = (doc) => ({
   id: doc.productCode,

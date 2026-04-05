@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosClient';
 import Badge from '../components/Badge';
@@ -6,6 +7,7 @@ import Badge from '../components/Badge';
 
 
 const PredictionHistoryPage = () => {
+  useDocTitle('Prediction History');
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

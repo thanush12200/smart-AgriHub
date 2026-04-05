@@ -1,14 +1,38 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import api from '../api/axiosClient';
 
 const AuthContext = createContext(null);
 
+const safeParse = (raw) => {
+  try {
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    localStorage.removeItem('user');
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState(() => safeParse(localStorage.getItem('user')));
+
+  // C6: Validate token with server on mount — prevents localStorage role tampering
+  useEffect(() => {
+    if (!token) return;
+
+    api.get('/auth/me')
+      .then(({ data }) => {
+        setUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      })
+      .catch(() => {
+        // Token expired or invalid — force logout
+        setToken(null);
+        setUser(null);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const persist = (newToken, newUser) => {
     setToken(newToken);

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 
 const LeafIcon = () => (
@@ -9,6 +10,7 @@ const LeafIcon = () => (
 );
 
 const FertilizerPage = () => {
+  useDocTitle('Fertilizer Advisor');
   const [input, setInput] = useState({ crop: 'rice', npk: { n: 30, p: 25, k: 28 } });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');

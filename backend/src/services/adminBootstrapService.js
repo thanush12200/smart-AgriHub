@@ -2,6 +2,11 @@ const User = require('../models/User');
 const logger = require('../config/logger');
 
 const seedAdminIfEnabled = async () => {
+  // Never auto-seed in production
+  if (process.env.NODE_ENV === 'production') {
+    return;
+  }
+
   const enabled = String(process.env.AUTO_SEED_ADMIN || '').toLowerCase() === 'true';
   if (!enabled) return;
 
@@ -10,6 +15,14 @@ const seedAdminIfEnabled = async () => {
 
   if (!email || !password) {
     logger.warn('AUTO_SEED_ADMIN=true but ADMIN_EMAIL / ADMIN_PASSWORD are missing');
+    return;
+  }
+
+  // Reject weak / placeholder passwords
+  if (password.length < 12 || /^(Admin@?\d+!?|change.?me|password|REPLACE_ME)/i.test(password)) {
+    logger.error(
+      'ADMIN_PASSWORD is too weak or still a placeholder. Use a strong random password (min 12 chars).'
+    );
     return;
   }
 

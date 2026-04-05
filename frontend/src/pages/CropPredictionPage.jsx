@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axiosClient';
+import useDocTitle from '../hooks/useDocTitle';
 
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
 
@@ -12,6 +13,7 @@ const UploadIcon = () => (
 );
 
 const CropPredictionPage = () => {
+  useDocTitle('Crop Prediction');
   const [input, setInput] = useState({ soilType: 'black', rainfall: 120, temperature: 28, region: 'Karnataka' });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');

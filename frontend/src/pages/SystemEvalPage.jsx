@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 
 const SystemEvalPage = () => {
+  useDocTitle('System Evaluation');
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
 

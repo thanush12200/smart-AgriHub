@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const SignupPage = () => {
+  useDocTitle('Create Account');
   const { signup } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', email: '', password: '', region: 'Karnataka', language: 'en' });

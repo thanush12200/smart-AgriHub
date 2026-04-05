@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import Badge from '../components/Badge';
 import { formatINR } from '../utils/formatINR';
@@ -12,6 +13,7 @@ const STATUS_COLORS = {
 };
 
 const OrdersPage = () => {
+  useDocTitle('My Orders');
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

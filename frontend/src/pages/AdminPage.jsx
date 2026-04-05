@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import Badge from '../components/Badge';
 import { formatINR } from '../utils/formatINR';
@@ -69,6 +70,7 @@ const TABS = [
    AdminPage — Main Component
    ═══════════════════════════════════════════════════════ */
 const AdminPage = () => {
+  useDocTitle('Admin Dashboard');
   const [tab, setTab] = useState('overview');
 
   // Data

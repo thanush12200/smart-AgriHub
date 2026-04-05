@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { StatusCodes } = require('http-status-codes');
 const asyncHandler = require('../utils/asyncHandler');
 const Order = require('../models/Order');
@@ -5,12 +6,7 @@ const Product = require('../models/Product');
 const ApiError = require('../utils/ApiError');
 
 const generateOrderId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = 'ORD-';
-  for (let i = 0; i < 8; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
+  return 'ORD-' + crypto.randomBytes(6).toString('hex').toUpperCase();
 };
 
 const placeOrder = asyncHandler(async (req, res) => {
@@ -26,11 +22,31 @@ const placeOrder = asyncHandler(async (req, res) => {
   let totalAmount = 0;
   const processedItems = [];
 
-  // Verify stock and calculate total
+  // Atomic stock reservation — prevents overselling race condition
   for (const item of items) {
-    const product = await Product.findOne({ productCode: item.productCode, isActive: true });
-    if (!product) throw new ApiError(StatusCodes.NOT_FOUND, `Product ${item.productCode} not found or inactive`);
-    if (product.stock < item.quantity) throw new ApiError(StatusCodes.BAD_REQUEST, `Insufficient stock for ${product.name}`);
+    const product = await Product.findOneAndUpdate(
+      {
+        productCode: item.productCode,
+        isActive: true,
+        stock: { $gte: item.quantity } // atomic guard
+      },
+      { $inc: { stock: -item.quantity } },
+      { new: true }
+    );
+
+    if (!product) {
+      // Rollback previously reserved items
+      for (const prev of processedItems) {
+        await Product.updateOne(
+          { productCode: prev.productCode },
+          { $inc: { stock: prev.quantity } }
+        );
+      }
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        `Product ${item.productCode} not found, inactive, or insufficient stock`
+      );
+    }
 
     totalAmount += product.price * item.quantity;
     processedItems.push({
@@ -39,10 +55,6 @@ const placeOrder = asyncHandler(async (req, res) => {
       price: product.price,
       quantity: item.quantity
     });
-
-    // Deduct stock
-    product.stock -= item.quantity;
-    await product.save();
   }
 
   const order = await Order.create({

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
 
@@ -25,6 +26,7 @@ const SUGGESTIONS = [
 ];
 
 const ChatbotPage = () => {
+  useDocTitle('AI Chatbot');
   const { user } = useAuth();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);

@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
 
 const ProfilePage = () => {
+  useDocTitle('Profile');
   const { user, updateUser } = useAuth();
   
   const [profileForm, setProfileForm] = useState({

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
@@ -25,6 +26,7 @@ const badgeClass = {
 };
 
 const WeatherPredictionPage = () => {
+  useDocTitle('Weather Prediction');
   const { user } = useAuth();
   const [region, setRegion] = useState(user?.region || 'Karnataka');
   const [query, setQuery] = useState(user?.region || 'Karnataka');

@@ -8,10 +8,14 @@ const Product = require('../models/Product');
 const Announcement = require('../models/Announcement');
 const AuditLog = require('../models/AuditLog');
 const ApiError = require('../utils/ApiError');
+const { escapeRegex } = require('../utils/escapeRegex');
 
 // ── Helpers ────────────────────────────────────────────
 const writeAudit = (adminId, action, detail = '') =>
-  AuditLog.create({ admin: adminId, action, detail }).catch(() => {});
+  AuditLog.create({ admin: adminId, action, detail }).catch((err) => {
+    const logger = require('../config/logger');
+    logger.warn(`Audit write failed: ${err.message}`);
+  });
 
 // ── Farmers ────────────────────────────────────────────
 const listFarmers = asyncHandler(async (req, res) => {
@@ -20,7 +24,7 @@ const listFarmers = asyncHandler(async (req, res) => {
   if (status === 'active') filter.isActive = true;
   if (status === 'blocked') filter.isActive = false;
   if (search.trim()) {
-    const rx = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const rx = new RegExp(escapeRegex(search.trim()), 'i');
     filter.$or = [{ name: rx }, { email: rx }, { region: rx }];
   }
   const farmers = await User.find(filter).select('-password').sort({ createdAt: -1 });
@@ -125,7 +129,7 @@ const getChatLogs = asyncHandler(async (req, res) => {
   const { search = '' } = req.query;
   const filter = {};
   if (search.trim()) {
-    const rx = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    const rx = new RegExp(escapeRegex(search.trim()), 'i');
     filter.message = rx;
   }
   const logs = await ChatLog.find(filter)
@@ -140,11 +144,23 @@ const uploadModel = asyncHandler(async (req, res) => {
   const { name, version, status = 'staging', metadata } = req.body;
   if (!name || !version) throw new ApiError(StatusCodes.BAD_REQUEST, 'name and version are required');
 
+  let parsedMetadata = {};
+  if (metadata) {
+    try {
+      parsedMetadata = JSON.parse(metadata);
+      if (typeof parsedMetadata !== 'object' || parsedMetadata === null) {
+        throw new Error('not an object');
+      }
+    } catch {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'metadata must be valid JSON object');
+    }
+  }
+
   const record = await ModelRegistry.create({
     name,
     version,
     status,
-    metadata: metadata ? JSON.parse(metadata) : {},
+    metadata: parsedMetadata,
     fileUrl: req.file?.originalname,
     uploadedBy: req.user._id
   });

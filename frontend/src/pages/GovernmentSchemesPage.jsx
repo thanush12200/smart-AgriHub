@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
 
@@ -28,6 +29,7 @@ const categoryLabels = {
 const formatCategory = (value) => categoryLabels[value] || value?.replaceAll('_', ' ') || 'General';
 
 const GovernmentSchemesPage = () => {
+  useDocTitle('Government Schemes');
   const { user } = useAuth();
   const [schemes, setSchemes] = useState([]);
   const [categories, setCategories] = useState([]);

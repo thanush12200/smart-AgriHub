@@ -7,7 +7,7 @@ const { buildDashboardReport } = require('../services/reportService');
 
 const getAnalytics = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const region = req.user.region || 'Bengaluru';
+  const region = req.user.region || req.user.language === 'kn' ? 'Bengaluru' : 'India';
 
   const [cropCount, fertCount, chatCount, latestFertilizer, weather] = await Promise.all([
     PredictionLog.countDocuments({ user: userId, type: 'crop' }),
@@ -51,11 +51,14 @@ const getAnalytics = asyncHandler(async (req, res) => {
 const downloadReport = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const [cropCount, fertCount, chatCount] = await Promise.all([
+  const [cropCount, fertCount, chatCount, latestFertilizer] = await Promise.all([
     PredictionLog.countDocuments({ user: userId, type: 'crop' }),
     PredictionLog.countDocuments({ user: userId, type: 'fertilizer' }),
-    ChatLog.countDocuments({ user: userId })
+    ChatLog.countDocuments({ user: userId }),
+    PredictionLog.findOne({ user: userId, type: 'fertilizer' }).sort({ createdAt: -1 })
   ]);
+
+  const npk = latestFertilizer?.input?.npk || { n: 0, p: 0, k: 0 };
 
   const analytics = {
     summary: {
@@ -64,9 +67,9 @@ const downloadReport = asyncHandler(async (req, res) => {
       chatQueries: chatCount
     },
     soilHealth: [
-      { metric: 'Nitrogen (N)', value: 40 },
-      { metric: 'Phosphorus (P)', value: 30 },
-      { metric: 'Potassium (K)', value: 38 }
+      { metric: 'Nitrogen (N)', value: npk.n },
+      { metric: 'Phosphorus (P)', value: npk.p },
+      { metric: 'Potassium (K)', value: npk.k }
     ],
     alerts: []
   };

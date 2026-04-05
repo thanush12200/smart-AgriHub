@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 
 const JournalPage = () => {
+  useDocTitle('Farm Journal');
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

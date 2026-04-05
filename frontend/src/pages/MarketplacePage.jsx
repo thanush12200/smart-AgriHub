@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import { useCart } from '../context/CartContext';
 import { formatINR } from '../utils/formatINR';
@@ -6,6 +7,7 @@ import { formatINR } from '../utils/formatINR';
 
 
 const MarketplacePage = () => {
+  useDocTitle('Marketplace');
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(['All']);
   const [productsLoading, setProductsLoading] = useState(true);
@@ -41,7 +43,7 @@ const MarketplacePage = () => {
     try {
       const params = {
         page: 1,
-        limit: 200,
+        limit: 24,
         sort: active.sortBy || 'featured'
       };
 
@@ -61,9 +63,7 @@ const MarketplacePage = () => {
     }
   };
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
+  // Initial load handled by the debounced effect below
 
   useEffect(() => {
     const handle = window.setTimeout(() => {

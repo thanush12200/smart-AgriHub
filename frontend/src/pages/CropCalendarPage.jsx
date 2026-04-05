@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 
 const STATIC_CALENDAR_DATA = [
   { id: 1, crop: 'Wheat', type: 'Rabi', region: 'North', sow: [10, 11], harvest: [3, 4] },
@@ -16,6 +17,7 @@ const STATIC_CALENDAR_DATA = [
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const CropCalendarPage = () => {
+  useDocTitle('Crop Calendar');
   const [regionFilter, setRegionFilter] = useState('All');
   const [seasonFilter, setSeasonFilter] = useState('All');
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useDocTitle from '../hooks/useDocTitle';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import api from '../api/axiosClient';
 import MetricCard from '../components/MetricCard';
@@ -22,11 +23,14 @@ const DownloadIcon = () => (
 );
 
 const DashboardPage = () => {
+  useDocTitle('Dashboard');
   const { user } = useAuth();
   const [analytics, setAnalytics] = useState(null);
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [downloadError, setDownloadError] = useState('');
   const alerts = useSocketAlerts(user?.region);
 
   useEffect(() => {
@@ -50,13 +54,21 @@ const DashboardPage = () => {
   }, [user?.region]);
 
   const downloadReport = async () => {
-    const res = await api.get('/dashboard/report/pdf', { responseType: 'blob' });
-    const url = URL.createObjectURL(res.data);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'smart-agri-report.pdf';
-    anchor.click();
-    URL.revokeObjectURL(url);
+    setDownloadError('');
+    setDownloadingPdf(true);
+    try {
+      const res = await api.get('/dashboard/report/pdf', { responseType: 'blob' });
+      const url = URL.createObjectURL(res.data);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'smart-agri-report.pdf';
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setDownloadError(err.response?.data?.message || 'Failed to download report. Please try again.');
+    } finally {
+      setDownloadingPdf(false);
+    }
   };
 
   if (loading) {
@@ -147,9 +159,10 @@ const DashboardPage = () => {
       </div>
 
       {/* Download */}
-      <button className="btn-secondary" onClick={downloadReport} type="button">
+      {downloadError ? <p className="rounded-card border border-red-200 bg-red-50 p-3 text-sm text-red-600">{downloadError}</p> : null}
+      <button className="btn-secondary" onClick={downloadReport} disabled={downloadingPdf} type="button">
         <DownloadIcon />
-        Download PDF Report
+        {downloadingPdf ? 'Generating…' : 'Download PDF Report'}
       </button>
     </div>
   );
