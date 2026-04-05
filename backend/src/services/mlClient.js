@@ -4,7 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 
 const mlApi = axios.create({
   baseURL: process.env.ML_SERVICE_URL,
-  timeout: 12000
+  timeout: 40000
 });
 
 const invokeML = async (endpoint, payload) => {
