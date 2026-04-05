@@ -37,7 +37,11 @@ const allowedOrigins = new Set([
   'http://127.0.0.1:5173'
 ]);
 
-const allowedOriginPatterns = [/^http:\/\/localhost:\d+$/, /^http:\/\/127\.0\.0\.1:\d+$/];
+const allowedOriginPatterns = [
+  /^http:\/\/localhost:\d+$/,
+  /^http:\/\/127\.0\.0\.1:\d+$/,
+  /^https:\/\/.*\.vercel\.app$/
+];
 
 app.use(
   helmet({
