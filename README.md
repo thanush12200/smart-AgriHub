@@ -7,7 +7,7 @@ Production-ready full-stack web platform for farmers and agriculture startups.
 - Backend: Node.js, Express.js, MongoDB, JWT auth, Swagger
 - ML Service: FastAPI, scikit-learn, model inference APIs
 - Real-time: Socket.IO weather alerts
-- Deployment: Docker, Vercel/Netlify + Render/AWS
+- Deployment: Docker, Google Cloud Run + Firebase Hosting
 
 ## Monorepo Structure
 ```
@@ -67,6 +67,5 @@ docker compose up --build
 ## Docs
 - `docs/SYSTEM_ARCHITECTURE.md`
 - `docs/API_EXAMPLES.md`
-- `docs/DEPLOYMENT.md`
 - `docs/SECURITY_BEST_PRACTICES.md`
 - `docs/ROADMAP.md`

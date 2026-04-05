@@ -104,6 +104,7 @@ const Navbar = () => {
     { to: '/crop-prediction', label: 'Crops' },
     { to: '/fertilizer', label: 'Fertilizer' },
     { to: '/crop-calendar', label: 'Calendar' },
+    { to: '/govt-schemes', label: 'Schemes' },
     { to: '/chatbot', label: 'Assistant' },
     { to: '/marketplace', label: `Shop${itemCount ? ` (${itemCount})` : ''}` },
   ];

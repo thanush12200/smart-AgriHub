@@ -112,7 +112,7 @@ const SystemEvalPage = () => {
                 <li><strong>Backend:</strong> Node.js (Express), MongoDB Atlas with Mongoose ODM, JWT authentication.</li>
                 <li><strong>ML Service:</strong> FastAPI (Python), scikit-learn Random Forest classifiers.</li>
                 <li><strong>Security:</strong> express-rate-limit, helmet, bcrypt password hashing, CORS whitelist.</li>
-                <li><strong>Deployment:</strong> Docker Compose for local dev, Netlify (frontend) + Render (backend).</li>
+                <li><strong>Deployment:</strong> Docker Compose for local dev, Google Cloud Run (backend + ML) + Firebase Hosting (frontend).</li>
              </ul>
           </div>
         </div>
