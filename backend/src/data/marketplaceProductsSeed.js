@@ -1,16 +1,3 @@
-const buildProductImage = (name, category, id) => {
-  const tags = `${name} ${category} agriculture farm`
-    .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, ' ')
-    .split(/\s+/)
-    .filter((token) => token.length > 2)
-    .slice(0, 6)
-    .join(',');
-
-  const query = tags || `${String(category).toLowerCase()},agriculture`;
-  return `https://loremflickr.com/900/650/${query}?lock=${encodeURIComponent(id)}`;
-};
-
 const baseMarketplaceProducts = [
   {
     productCode: 'seed-001',
@@ -22,7 +9,7 @@ const baseMarketplaceProducts = [
     stock: 180,
     rating: 4.8,
     description: 'High-yield paddy seed variety suitable for irrigated conditions.',
-    image: 'https://5.imimg.com/data5/SELLER/Default/2024/5/419825843/ZG/JP/HJ/7691762/real-super-manju-seed-500x500.jpg'
+    image: 'https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'seed-002',
@@ -34,7 +21,7 @@ const baseMarketplaceProducts = [
     stock: 140,
     rating: 4.7,
     description: 'Popular wheat variety with stable grain quality.',
-    image: 'https://5.imimg.com/data5/IOS/Default/2025/7/526171468/FW/KL/GO/129705750/product-jpeg.jpeg'
+    image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'seed-003',
@@ -45,7 +32,8 @@ const baseMarketplaceProducts = [
     unit: '8 kg',
     stock: 110,
     rating: 4.6,
-    description: 'Fast-growing maize hybrid for high productivity.'
+    description: 'Fast-growing maize hybrid for high productivity.',
+    image: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'seed-004',
@@ -56,7 +44,8 @@ const baseMarketplaceProducts = [
     unit: '6 kg',
     stock: 95,
     rating: 4.5,
-    description: 'Pest-resistant cotton hybrid for improved lint quality.'
+    description: 'Pest-resistant cotton hybrid for improved lint quality.',
+    image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'fert-001',
@@ -67,7 +56,8 @@ const baseMarketplaceProducts = [
     unit: '45 kg bag',
     stock: 320,
     rating: 4.8,
-    description: 'Nitrogen fertilizer for vegetative crop growth.'
+    description: 'Nitrogen fertilizer for vegetative crop growth.',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'fert-002',
@@ -78,7 +68,8 @@ const baseMarketplaceProducts = [
     unit: '50 kg bag',
     stock: 250,
     rating: 4.7,
-    description: 'Phosphorus-rich fertilizer for root development.'
+    description: 'Phosphorus-rich fertilizer for root development.',
+    image: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'fert-003',
@@ -89,7 +80,8 @@ const baseMarketplaceProducts = [
     unit: '25 kg',
     stock: 170,
     rating: 4.6,
-    description: 'Balanced NPK for foliar and fertigation application.'
+    description: 'Balanced NPK for foliar and fertigation application.',
+    image: 'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'fert-004',
@@ -100,7 +92,8 @@ const baseMarketplaceProducts = [
     unit: '50 kg bag',
     stock: 210,
     rating: 4.5,
-    description: 'Potassium supplement for stress tolerance and quality.'
+    description: 'Potassium supplement for stress tolerance and quality.',
+    image: 'https://images.unsplash.com/photo-1416664806563-bb4f2d066e7c?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'fert-005',
@@ -111,7 +104,8 @@ const baseMarketplaceProducts = [
     unit: '40 kg bag',
     stock: 190,
     rating: 4.7,
-    description: 'Organic soil conditioner with beneficial microbes.'
+    description: 'Organic soil conditioner with beneficial microbes.',
+    image: 'https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'pest-001',
@@ -122,7 +116,8 @@ const baseMarketplaceProducts = [
     unit: '1 L',
     stock: 260,
     rating: 4.6,
-    description: 'Broad-spectrum natural pest deterrent for crops.'
+    description: 'Broad-spectrum natural pest deterrent for crops.',
+    image: 'https://images.unsplash.com/photo-1611735341450-74d61e660ad2?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'pest-002',
@@ -133,7 +128,8 @@ const baseMarketplaceProducts = [
     unit: '500 ml',
     stock: 130,
     rating: 4.5,
-    description: 'Controls leaf spot, blight, and fungal infections.'
+    description: 'Controls leaf spot, blight, and fungal infections.',
+    image: 'https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'pest-003',
@@ -144,7 +140,8 @@ const baseMarketplaceProducts = [
     unit: '1 L',
     stock: 120,
     rating: 4.4,
-    description: 'Systemic insecticide for sucking and chewing pests.'
+    description: 'Systemic insecticide for sucking and chewing pests.',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'pest-004',
@@ -155,7 +152,8 @@ const baseMarketplaceProducts = [
     unit: '20 traps',
     stock: 230,
     rating: 4.3,
-    description: 'Non-chemical pest monitoring and control traps.'
+    description: 'Non-chemical pest monitoring and control traps.',
+    image: 'https://images.unsplash.com/photo-1590682680695-43b964a3ae17?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'tool-001',
@@ -166,7 +164,8 @@ const baseMarketplaceProducts = [
     unit: 'piece',
     stock: 160,
     rating: 4.6,
-    description: 'Ergonomic tool for quick weed removal.'
+    description: 'Ergonomic tool for quick weed removal.',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'tool-002',
@@ -177,7 +176,8 @@ const baseMarketplaceProducts = [
     unit: 'piece',
     stock: 140,
     rating: 4.7,
-    description: 'Stainless steel shears for pruning stems and branches.'
+    description: 'Stainless steel shears for pruning stems and branches.',
+    image: 'https://images.unsplash.com/photo-1585664811087-47f65abbad64?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'tool-003',
@@ -188,7 +188,8 @@ const baseMarketplaceProducts = [
     unit: 'piece',
     stock: 90,
     rating: 4.5,
-    description: 'Portable meter for pH and moisture checks.'
+    description: 'Portable meter for pH and moisture checks.',
+    image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'tool-004',
@@ -199,7 +200,8 @@ const baseMarketplaceProducts = [
     unit: 'piece',
     stock: 70,
     rating: 4.6,
-    description: 'Rechargeable sprayer for pesticide and foliar use.'
+    description: 'Rechargeable sprayer for pesticide and foliar use.',
+    image: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'irri-001',
@@ -210,7 +212,8 @@ const baseMarketplaceProducts = [
     unit: 'set',
     stock: 45,
     rating: 4.8,
-    description: 'Water-saving drip system with filters and fittings.'
+    description: 'Water-saving drip system with filters and fittings.',
+    image: 'https://images.unsplash.com/photo-1591154669695-5f2a8d20c089?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'irri-002',
@@ -221,7 +224,8 @@ const baseMarketplaceProducts = [
     unit: 'piece',
     stock: 85,
     rating: 4.6,
-    description: 'High-coverage sprinkler for medium/large plots.'
+    description: 'High-coverage sprinkler for medium/large plots.',
+    image: 'https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'irri-003',
@@ -232,7 +236,8 @@ const baseMarketplaceProducts = [
     unit: '100 m roll',
     stock: 200,
     rating: 4.4,
-    description: 'Durable lateral pipe for drip and sprinkler setups.'
+    description: 'Durable lateral pipe for drip and sprinkler setups.',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'mach-001',
@@ -243,7 +248,8 @@ const baseMarketplaceProducts = [
     unit: 'unit',
     stock: 18,
     rating: 4.7,
-    description: 'Compact tiller for ploughing and land preparation.'
+    description: 'Compact tiller for ploughing and land preparation.',
+    image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'mach-002',
@@ -254,7 +260,8 @@ const baseMarketplaceProducts = [
     unit: 'unit',
     stock: 8,
     rating: 4.5,
-    description: 'Mechanized transplanting for paddy fields.'
+    description: 'Mechanized transplanting for paddy fields.',
+    image: 'https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'mach-003',
@@ -265,7 +272,8 @@ const baseMarketplaceProducts = [
     unit: 'unit',
     stock: 12,
     rating: 4.6,
-    description: 'Efficient threshing machine for multiple grains.'
+    description: 'Efficient threshing machine for multiple grains.',
+    image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'iot-001',
@@ -276,7 +284,8 @@ const baseMarketplaceProducts = [
     unit: 'device',
     stock: 95,
     rating: 4.5,
-    description: 'Real-time soil moisture monitoring with app alerts.'
+    description: 'Real-time soil moisture monitoring with app alerts.',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'iot-002',
@@ -287,7 +296,8 @@ const baseMarketplaceProducts = [
     unit: 'device',
     stock: 40,
     rating: 4.7,
-    description: 'Tracks rainfall, humidity, wind, and temperature on-field.'
+    description: 'Tracks rainfall, humidity, wind, and temperature on-field.',
+    image: 'https://images.unsplash.com/photo-1504608524841-42584120d693?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'iot-003',
@@ -298,7 +308,8 @@ const baseMarketplaceProducts = [
     unit: 'device',
     stock: 60,
     rating: 4.6,
-    description: 'Automates irrigation scheduling based on sensor data.'
+    description: 'Automates irrigation scheduling based on sensor data.',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'feed-001',
@@ -309,7 +320,8 @@ const baseMarketplaceProducts = [
     unit: '50 kg bag',
     stock: 180,
     rating: 4.6,
-    description: 'Balanced feed mix for dairy cattle productivity.'
+    description: 'Balanced feed mix for dairy cattle productivity.',
+    image: 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=900&h=650&fit=crop&q=80'
   },
   {
     productCode: 'feed-002',
@@ -320,7 +332,8 @@ const baseMarketplaceProducts = [
     unit: '1 kg',
     stock: 210,
     rating: 4.5,
-    description: 'Supports bone health and milk yield in livestock.'
+    description: 'Supports bone health and milk yield in livestock.',
+    image: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=900&h=650&fit=crop&q=80'
   }
 ];
 

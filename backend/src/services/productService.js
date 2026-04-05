@@ -10,10 +10,16 @@ const ensureProductsSeeded = async () => {
   }
 
   seedingPromise = (async () => {
-    const count = await Product.estimatedDocumentCount();
-    if (count > 0) return;
-
-    await Product.insertMany(marketplaceProductsSeed, { ordered: false });
+    // Always upsert so that changes to images/fields in the seed file propagate
+    await Promise.all(
+      marketplaceProductsSeed.map((product) =>
+        Product.findOneAndUpdate(
+          { productCode: product.productCode },
+          { $set: product },
+          { upsert: true, new: true }
+        )
+      )
+    );
   })();
 
   try {
