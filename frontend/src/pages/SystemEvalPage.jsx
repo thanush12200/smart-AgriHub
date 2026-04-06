@@ -42,13 +42,13 @@ const SystemEvalPage = () => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 animate-fadeIn">
-      <div className="mb-8">
-        <p className="section-label">Academic Review</p>
-        <h1 className="font-display text-4xl text-slate-900 mt-1">System Evaluation</h1>
-        <p className="mt-2 text-slate-600">
+      <section className="page-hero mb-8">
+        <p className="page-kicker">Academic Review</p>
+        <h1 className="page-title">System Evaluation</h1>
+        <p className="page-copy">
           Performance metrics and machine learning accuracy reports for project evaluation.
         </p>
-      </div>
+      </section>
 
       {loading ? (
         <div className="card p-12 text-center text-slate-500">Running diagnostics...</div>

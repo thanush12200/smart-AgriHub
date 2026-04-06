@@ -103,13 +103,16 @@ const JournalPage = () => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 animate-fadeIn">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl text-slate-900">Farm Journal</h1>
-          <p className="mt-1 text-sm text-slate-500">Record your field activities and track crop progress.</p>
+      <section className="page-hero">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="page-kicker">Field Records</p>
+            <h1 className="page-title">Farm Journal</h1>
+            <p className="page-copy">Record your field activities, create a durable operating history, and keep crop progress easy to trace.</p>
+          </div>
+          <button className="btn-primary" onClick={() => openForm()}>+ New Entry</button>
         </div>
-        <button className="btn-primary" onClick={() => openForm()}>+ New Entry</button>
-      </div>
+      </section>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <input 

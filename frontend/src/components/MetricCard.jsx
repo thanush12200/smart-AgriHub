@@ -28,14 +28,14 @@ const MetricCard = ({ title, value, subtitle, accent = 'emerald' }) => {
   const icon = icons[accent] || icons.emerald;
 
   return (
-    <div className={`card border-l-[3px] ${border} p-5 transition-transform hover:-translate-y-0.5`}>
-      <div className="flex items-start justify-between">
+    <div className={`card border-l-[3px] ${border} p-5 md:p-6`}>
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-medium text-slate-400">{title}</p>
-          <h3 className="mt-1.5 font-display text-3xl text-slate-900">{value}</h3>
-          <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">{title}</p>
+          <h3 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-slate-950">{value}</h3>
+          <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
         </div>
-        <div className="rounded-lg bg-surface-50 p-2">
+        <div className="rounded-2xl border border-slate-200/80 bg-slate-50 p-3 shadow-sm">
           {icon}
         </div>
       </div>

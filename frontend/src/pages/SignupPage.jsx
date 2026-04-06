@@ -26,18 +26,20 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-surface-50 px-4 py-8">
-      <div className="relative mx-auto max-w-lg animate-fadeIn">
-        <div className="mb-8 flex items-center gap-2">
+    <div className="relative min-h-screen overflow-hidden bg-surface-50 px-4 py-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(26,122,76,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(200,97,31,0.14),transparent_24%)]" />
+      <div className="relative mx-auto max-w-xl animate-fadeIn">
+        <div className="mb-8 flex items-center gap-3">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-500">
             <path d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 17 3.5 19 2c1 2 2 4.5 2 8c0 5.5-4.5 10-10 10Z" />
             <path d="M2 21c0-3 1.9-5.5 4.5-6.3" />
           </svg>
-          <Link to="/login" className="font-display text-lg text-slate-900 hover:text-brand-600 transition-colors">Smart Agri Hub</Link>
+          <Link to="/login" className="font-display text-lg font-extrabold text-slate-900 hover:text-brand-600 transition-colors">Smart Agri Hub</Link>
         </div>
 
-        <div className="card p-7 md:p-8">
-          <h2 className="font-display text-2xl text-slate-900">Create your account</h2>
+        <div className="card border-white/70 p-7 md:p-8">
+          <p className="page-kicker">New Farmer Onboarding</p>
+          <h2 className="mt-3 font-display text-3xl font-extrabold text-slate-900">Create your account</h2>
           <p className="section-subtitle">Join thousands of farmers using AI-powered insights.</p>
 
           <form className="mt-6 grid gap-4" onSubmit={onSubmit}>

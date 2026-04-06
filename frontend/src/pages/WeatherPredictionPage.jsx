@@ -82,10 +82,10 @@ const WeatherPredictionPage = () => {
 
   return (
     <div className="space-y-5 animate-fadeIn">
-      <section className="card p-5">
-        <p className="text-[10px] font-black uppercase tracking-[0.23em] text-sky-700">Prediction input</p>
-        <h2 className="font-display text-2xl font-bold text-slate-900">Weather Prediction System</h2>
-        <p className="mt-1 text-sm text-slate-600">Get current weather, 7-day forecast trend, and farming risk indicators by region.</p>
+      <section className="page-hero">
+        <p className="page-kicker text-sky-700">Prediction Input</p>
+        <h2 className="page-title">Weather Prediction System</h2>
+        <p className="page-copy">Get current weather, a 7-day forecast trend, and farming risk indicators by region.</p>
 
         <form className="mt-4 grid gap-3 md:grid-cols-[1fr_auto_auto]" onSubmit={handleSearch}>
           <input
@@ -157,7 +157,7 @@ const WeatherPredictionPage = () => {
             </section>
           ) : null}
 
-          <section className="card p-5">
+          <section className="card p-5 md:p-6">
             <h3 className="font-display text-xl font-bold text-slate-900">7-Day Forecast Trend</h3>
             <p className="mb-3 text-sm text-slate-500">Temperature envelope and rainfall intensity</p>
             <div className="h-80">
@@ -184,7 +184,7 @@ const WeatherPredictionPage = () => {
             </div>
           </section>
 
-          <section className="card p-5">
+          <section className="card p-5 md:p-6">
             <h3 className="font-display text-xl font-bold text-slate-900">Day-wise Prediction Table</h3>
             <div className="mt-3 overflow-auto rounded-2xl border border-slate-200">
               <table className="min-w-full text-left text-xs">

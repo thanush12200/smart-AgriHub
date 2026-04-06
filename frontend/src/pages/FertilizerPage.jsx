@@ -32,14 +32,18 @@ const FertilizerPage = () => {
 
   return (
     <div className="animate-fadeIn">
-      <div className="mb-5">
-        <p className="section-label">Nutrient Planning</p>
-        <h1 className="section-title mt-1">Fertilizer Recommendation</h1>
-        <p className="section-subtitle">Get dosage plans with organic alternatives based on your crop and soil nutrient levels.</p>
-      </div>
+      <section className="page-hero mb-5">
+        <p className="page-kicker">Nutrient Planning</p>
+        <h1 className="page-title">Fertilizer Recommendation</h1>
+        <p className="page-copy">Get dosage plans with organic alternatives based on your crop and current NPK soil values.</p>
+      </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <form className="card space-y-4 p-5" onSubmit={onSubmit}>
+        <form className="card space-y-4 p-5 md:p-6" onSubmit={onSubmit}>
+          <div>
+            <p className="section-label">Advisory Inputs</p>
+            <h2 className="section-title mt-1">Crop and NPK profile</h2>
+          </div>
           <div>
             <label className="field-label">Crop</label>
             <input className="input" placeholder="e.g. rice, wheat, maize" value={input.crop} onChange={(e) => setInput({ ...input, crop: e.target.value })} />
@@ -67,17 +71,16 @@ const FertilizerPage = () => {
           <button className="btn-primary w-full" disabled={loading} type="submit">{loading ? 'Analyzing…' : 'Get Recommendation'}</button>
         </form>
 
-        <section className="card p-5">
+        <section className="card p-5 md:p-6">
           <p className="section-label text-accent-400">Advisory</p>
           <h3 className="section-title mt-1">Results</h3>
           {!result ? (
             <p className="mt-3 text-sm text-slate-400">Enter crop and NPK values to view recommendation.</p>
           ) : (
             <div className="mt-4 space-y-4">
-              {/* Hero result */}
-              <div className="rounded-lg border-l-[3px] border-l-accent-400 bg-accent-50 p-4">
-                <p className="text-xs text-accent-600">Recommended Fertilizer</p>
-                <p className="mt-1 font-display text-2xl text-slate-900">{result.fertilizer}</p>
+              <div className="rounded-[24px] border-l-[3px] border-l-accent-400 bg-accent-50 p-4">
+                <p className="text-xs text-accent-600 uppercase tracking-[0.18em] font-semibold">Recommended Fertilizer</p>
+                <p className="mt-2 font-display text-3xl font-extrabold text-slate-900">{result.fertilizer}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -91,7 +94,7 @@ const FertilizerPage = () => {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-surface-200 bg-surface-50 p-4 mt-6">
+              <div className="mt-6 rounded-[24px] border border-surface-200 bg-surface-50 p-4">
                 <p className="section-label">Soil Health Report</p>
                 
                 <div className="mt-3 space-y-3">
@@ -131,7 +134,7 @@ const FertilizerPage = () => {
               <div className="mt-6">
                 <p className="text-xs font-semibold text-slate-500 mb-2">🌿 Organic Alternatives</p>
                 {result.organicAlternatives.map((alt) => (
-                  <div key={alt} className="stagger-item mb-1.5 flex items-center gap-2 rounded-lg border border-brand-100 bg-brand-50/40 px-3 py-2.5 text-sm text-brand-800">
+                  <div key={alt} className="stagger-item mb-1.5 flex items-center gap-2 rounded-2xl border border-brand-100 bg-brand-50/40 px-3 py-3 text-sm text-brand-800">
                     <LeafIcon />
                     <span>{alt}</span>
                   </div>

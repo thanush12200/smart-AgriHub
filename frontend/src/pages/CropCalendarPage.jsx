@@ -29,14 +29,14 @@ const CropCalendarPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 animate-fadeIn">
-      <div className="mb-8">
-        <p className="section-label">Planning Guide</p>
-        <h1 className="font-display text-4xl text-slate-900 mt-1">Sowing & Harvest Calendar</h1>
-        <p className="mt-2 text-slate-600 max-w-2xl">
+      <section className="page-hero mb-8">
+        <p className="page-kicker">Planning Guide</p>
+        <h1 className="page-title">Sowing & Harvest Calendar</h1>
+        <p className="page-copy max-w-3xl">
           Reference guide for planning agricultural activities. Shows approximate sowing and harvesting months for major Indian crops by region and season.
         </p>
         <p className="mt-1 text-xs text-slate-400">Timings are indicative and may vary based on local conditions.</p>
-      </div>
+      </section>
 
       <div className="card p-5">
         <div className="flex flex-wrap items-center gap-4 mb-6">

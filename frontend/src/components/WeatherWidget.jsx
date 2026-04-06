@@ -16,40 +16,39 @@ const WeatherWidget = ({ weather }) => {
 
   return (
     <section className="card overflow-hidden">
-      {/* Header with hero temperature */}
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-surface-200 p-5 md:p-6">
         <div>
           <p className="section-label">Live Weather</p>
           <h2 className="section-title mt-1">{weather.current?.region}</h2>
         </div>
-        <div className="flex items-baseline gap-3">
-          <span className="text-4xl">{emoji}</span>
-          <span className="font-display text-5xl text-slate-900">{weather.current?.tempC}°</span>
-          <span className="text-sm text-slate-400">C</span>
+        <div className="rounded-[28px] border border-white/70 bg-white/70 px-5 py-4 shadow-sm backdrop-blur-xl">
+          <div className="flex items-baseline gap-3">
+            <span className="text-4xl">{emoji}</span>
+            <span className="font-display text-5xl font-extrabold text-slate-900">{weather.current?.tempC}°</span>
+            <span className="text-sm text-slate-400">C</span>
+          </div>
         </div>
       </div>
 
-      {/* Stats row */}
       <div className="grid grid-cols-3 divide-x divide-surface-200 border-b border-surface-200">
         <div className="px-5 py-4">
-          <p className="text-xs text-slate-400">Humidity</p>
-          <p className="mt-1 text-lg font-semibold text-slate-800">{weather.current?.humidity}%</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Humidity</p>
+          <p className="mt-1.5 text-lg font-semibold text-slate-800">{weather.current?.humidity}%</p>
         </div>
         <div className="px-5 py-4">
-          <p className="text-xs text-slate-400">Condition</p>
-          <p className="mt-1 text-lg font-semibold capitalize text-slate-800">{weather.current?.condition}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Condition</p>
+          <p className="mt-1.5 text-lg font-semibold capitalize text-slate-800">{weather.current?.condition}</p>
         </div>
         <div className="px-5 py-4">
-          <p className="text-xs text-slate-400">Wind</p>
-          <p className="mt-1 text-lg font-semibold text-slate-800">{weather.current?.windKph} km/h</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Wind</p>
+          <p className="mt-1.5 text-lg font-semibold text-slate-800">{weather.current?.windKph} km/h</p>
         </div>
       </div>
 
-      {/* Forecast table */}
       <div className="overflow-auto">
         <table className="min-w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-surface-200 text-xs text-slate-400">
+            <tr className="border-b border-surface-200 bg-surface-50 text-[11px] uppercase tracking-[0.14em] text-slate-400">
               <th className="px-5 py-3 font-medium">Date</th>
               <th className="px-5 py-3 font-medium">Min</th>
               <th className="px-5 py-3 font-medium">Max</th>

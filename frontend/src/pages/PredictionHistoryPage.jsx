@@ -35,17 +35,20 @@ const PredictionHistoryPage = () => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 animate-fadeIn">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl text-slate-900">Prediction History</h1>
-          <p className="mt-1 text-sm text-slate-500">View your past crop and fertilizer analyses.</p>
+      <section className="page-hero">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="page-kicker">Decision Trail</p>
+            <h1 className="page-title">Prediction History</h1>
+            <p className="page-copy">Review past crop and fertilizer analyses, then reuse any previous input set to move faster.</p>
+          </div>
+          <select className="input w-48" value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option value="all">All Predictions</option>
+            <option value="crop">Crop Only</option>
+            <option value="fertilizer">Fertilizer Only</option>
+          </select>
         </div>
-        <select className="input w-48" value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value="all">All Predictions</option>
-          <option value="crop">Crop Only</option>
-          <option value="fertilizer">Fertilizer Only</option>
-        </select>
-      </div>
+      </section>
 
       {error ? <div className="p-4 text-red-600 bg-red-50 rounded-xl">{error}</div> : null}
 

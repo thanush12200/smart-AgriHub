@@ -25,15 +25,17 @@ const SystemEvalPage = lazy(() => import('./pages/SystemEvalPage'));
 
 const PageLoader = () => (
   <div className="flex min-h-[50vh] items-center justify-center">
-    <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-surface-200 border-t-brand-500" />
+    <div className="rounded-full border border-white/70 bg-white/70 p-4 shadow-shell backdrop-blur-xl">
+      <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-surface-200 border-t-brand-500" />
+    </div>
   </div>
 );
 
 /* Clean shell — no more MODULE CONTEXT banner.
    Page headings belong *in* the page, not in a wrapper. */
 const Shell = ({ children }) => (
-  <div className="min-h-screen bg-surface-50">
-    <div className="mx-auto max-w-7xl px-4 pb-12 pt-3 md:px-6">
+  <div className="app-shell">
+    <div className="mx-auto max-w-[1440px] px-4 pb-16 pt-4 md:px-6 lg:px-8">
       <Navbar />
       <main className="mt-6">
         <Suspense fallback={<PageLoader />}>{children}</Suspense>

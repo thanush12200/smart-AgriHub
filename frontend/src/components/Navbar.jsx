@@ -112,27 +112,28 @@ const Navbar = () => {
   if (user?.role === 'admin') links.push({ to: '/admin', label: 'Admin' });
 
   return (
-    <nav className="rounded-card border border-surface-200 bg-white px-4 py-3 shadow-card relative z-50">
+    <nav className="sticky top-4 z-50 rounded-[30px] border border-white/70 bg-white/72 px-4 py-3 shadow-shell backdrop-blur-xl md:px-5">
       <div className="flex items-center justify-between gap-4">
-        {/* Brand */}
-        <Link to="/" className="flex items-center gap-2 min-w-0">
-          <LeafIcon />
+        <Link to="/" className="flex min-w-0 items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 via-brand-500 to-accent-400 text-white shadow-glow">
+            <LeafIcon />
+          </div>
           <div className="min-w-0">
-            <h1 className="truncate font-display text-lg text-slate-900">Smart Agri Hub</h1>
+            <p className="truncate text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-600">Agritech Suite</p>
+            <h1 className="truncate font-display text-lg font-extrabold tracking-tight text-slate-950">Smart Agri Hub</h1>
           </div>
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="hidden items-center gap-1 rounded-full bg-slate-950/5 p-1 lg:flex">
           {links.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `relative px-3 py-2 text-[13px] font-medium transition-colors ${
+                `relative rounded-full px-3.5 py-2.5 text-[13px] font-semibold transition-all ${
                   isActive
-                    ? 'text-brand-600 after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:rounded-full after:bg-brand-500'
-                    : 'text-slate-500 hover:text-slate-900'
+                    ? 'bg-white text-slate-950 shadow-sm'
+                    : 'text-slate-500 hover:bg-white/80 hover:text-slate-900'
                 }`
               }
             >
@@ -141,12 +142,11 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Right side: theme + notifications + user dropdown */}
         <div className="hidden items-center gap-3 lg:flex">
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-1.5 text-slate-500 hover:text-slate-900 transition-colors focus:outline-none rounded-md"
+            className="rounded-full border border-white/70 bg-white/76 px-3 py-2 text-sm text-slate-600 transition hover:-translate-y-0.5 hover:text-slate-900"
             title="Toggle theme"
           >
             {theme === 'dark' ? '☀️' : '🌙'}
@@ -154,7 +154,7 @@ const Navbar = () => {
 
           {user && (
             <div className="relative" ref={notifRef}>
-              <button type="button" onClick={() => setNotifOpen(!notifOpen)} className="focus:outline-none">
+              <button type="button" onClick={() => setNotifOpen(!notifOpen)} className="rounded-full border border-white/70 bg-white/76 px-3 py-2 focus:outline-none">
                 <BellIcon count={unreadCount} />
               </button>
               {notifOpen && (
@@ -172,18 +172,21 @@ const Navbar = () => {
           <div className="relative ml-2" ref={dropdownRef}>
             {user?.name && (
               <button
-                className="flex items-center gap-2 text-xs text-slate-600 hover:text-slate-900 focus:outline-none"
+                className="flex items-center gap-3 rounded-full border border-white/70 bg-white/82 px-2 py-1.5 text-xs text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-slate-900 focus:outline-none"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                <span className="font-semibold">{user.name}</span>
-                <div className="h-7 w-7 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold text-xs ring-2 ring-transparent transition hover:ring-brand-200">
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">{user.role}</p>
+                  <span className="font-semibold">{user.name}</span>
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 font-bold text-xs text-brand-700 ring-2 ring-transparent transition hover:ring-brand-200">
                   {user.name[0].toUpperCase()}
                 </div>
               </button>
             )}
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-slate-200 bg-white p-2 shadow-lg z-50 animate-fadeIn">
+              <div className="absolute right-0 top-full z-50 mt-2 w-52 rounded-2xl border border-white/80 bg-white/94 p-2 shadow-shell animate-fadeIn backdrop-blur-xl">
                 <Link to="/profile" className="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-slate-900" onClick={() => setDropdownOpen(false)}>
                   Profile Settings
                 </Link>
@@ -212,7 +215,7 @@ const Navbar = () => {
         <div className="flex items-center gap-3 lg:hidden">
           {user && (
             <div className="relative" ref={notifRef}>
-              <button type="button" onClick={() => setNotifOpen(!notifOpen)} className="focus:outline-none text-slate-500">
+              <button type="button" onClick={() => setNotifOpen(!notifOpen)} className="rounded-full border border-white/70 bg-white/80 px-3 py-2 text-slate-500 focus:outline-none">
                 <BellIcon count={unreadCount} />
               </button>
               {notifOpen && (
@@ -228,7 +231,7 @@ const Navbar = () => {
           )}
 
           <button
-            className="rounded-lg p-2 text-slate-500 hover:bg-surface-100"
+            className="rounded-full border border-white/70 bg-white/80 p-2 text-slate-500 hover:bg-surface-100"
             onClick={() => setMobileOpen((prev) => !prev)}
             type="button"
           >
@@ -246,7 +249,7 @@ const Navbar = () => {
               to={item.to}
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
-                `rounded-lg px-3 py-2.5 text-sm font-medium ${
+                `rounded-2xl px-3 py-2.5 text-sm font-medium ${
                   isActive
                     ? 'bg-brand-50 text-brand-700'
                     : 'text-slate-600 hover:bg-surface-50'

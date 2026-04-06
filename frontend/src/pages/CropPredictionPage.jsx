@@ -103,15 +103,18 @@ const CropPredictionPage = () => {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Section 1: Crop Prediction */}
-      <div>
-        <p className="section-label">Crop Intelligence</p>
-        <h1 className="section-title mt-1">Predict the best crops for your field</h1>
-        <p className="section-subtitle">Enter your soil and climate conditions to get AI-ranked crop recommendations.</p>
-      </div>
+      <section className="page-hero">
+        <p className="page-kicker">Crop Intelligence</p>
+        <h1 className="page-title">Predict the best crops for your field</h1>
+        <p className="page-copy">Enter your soil and climate conditions to get AI-ranked crop recommendations with interpretable confidence and feature importance.</p>
+      </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <form className="card p-5 space-y-4" onSubmit={onSubmit}>
+        <form className="card p-5 md:p-6 space-y-4" onSubmit={onSubmit}>
+          <div>
+            <p className="section-label">Field Inputs</p>
+            <h2 className="section-title mt-1">Soil and climate profile</h2>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="field-label">Soil Type</label>
@@ -136,17 +139,20 @@ const CropPredictionPage = () => {
           <button className="btn-primary w-full" disabled={loading} type="submit">{loading ? 'Analyzing…' : 'Predict Crops'}</button>
         </form>
 
-        <section className="card p-5">
+        <section className="card p-5 md:p-6">
           <p className="section-label text-accent-400">Results</p>
           <h3 className="section-title mt-1">Recommendations</h3>
           {!result ? (
             <p className="mt-3 text-sm text-slate-400">Run a prediction to see ranked crops here.</p>
           ) : (
             <div className="mt-4 space-y-4">
-              <p className="text-sm text-slate-600">Confidence: <span className="font-semibold text-slate-900">{Math.round(result.confidence * 100)}%</span></p>
+              <div className="rounded-[24px] border border-brand-100 bg-brand-50/60 p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-600">Model Confidence</p>
+                <p className="mt-2 text-3xl font-display font-extrabold text-slate-950">{Math.round(result.confidence * 100)}%</p>
+              </div>
               <div className="space-y-2">
                 {result.recommendations.map((item, idx) => (
-                  <div key={item.crop} className={`stagger-item flex items-center justify-between rounded-lg border p-3 ${idx === 0 ? 'border-brand-200 bg-brand-50' : 'border-surface-200 bg-surface-50'}`}>
+                  <div key={item.crop} className={`stagger-item flex items-center justify-between rounded-2xl border p-4 ${idx === 0 ? 'border-brand-200 bg-brand-50' : 'border-surface-200 bg-surface-50'}`}>
                     <span className={`text-sm font-semibold capitalize ${idx === 0 ? 'text-brand-700' : 'text-slate-700'}`}>
                       {idx === 0 ? '🏆 ' : ''}{item.crop}
                     </span>
@@ -173,15 +179,14 @@ const CropPredictionPage = () => {
         </section>
       </div>
 
-      {/* Section 2: Plant Detection */}
-      <div className="mt-2">
-        <p className="section-label text-violet-500">Plant Detection</p>
-        <h2 className="section-title mt-1">Identify a plant from an image</h2>
-        <p className="section-subtitle">Upload a clear photo of a leaf or fruit to detect the crop type and health status.</p>
-      </div>
+      <section className="page-hero">
+        <p className="page-kicker text-violet-600">Plant Detection</p>
+        <h2 className="page-title">Identify a plant from an image</h2>
+        <p className="page-copy">Upload a clear photo of a leaf or fruit to detect crop type, likely health status, and care suggestions.</p>
+      </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <form className="card p-5 space-y-4" onSubmit={onPlantDetect}>
+        <form className="card p-5 md:p-6 space-y-4" onSubmit={onPlantDetect}>
           <label className="block cursor-pointer">
             <input
               className="sr-only"
@@ -208,7 +213,7 @@ const CropPredictionPage = () => {
           </button>
         </form>
 
-        <section className="card p-5">
+        <section className="card p-5 md:p-6">
           <p className="section-label text-violet-500">Detection Result</p>
           <h3 className="section-title mt-1">Plant Analysis</h3>
 

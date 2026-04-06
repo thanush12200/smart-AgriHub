@@ -88,42 +88,70 @@ const DashboardPage = () => {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Greeting */}
-      <div>
-        <h1 className="font-display text-3xl text-slate-900">
-          {getGreeting()}, {user?.name || 'Farmer'} 👋
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">Here's what's happening on your farm today.</p>
-      </div>
+      <section className="page-hero">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="page-kicker">Field Command Center</p>
+            <h1 className="page-title">
+              {getGreeting()}, {user?.name || 'Farmer'}
+            </h1>
+            <p className="page-copy">
+              Your farm intelligence dashboard brings together live weather, activity trends, nutrient posture, and advisory signals in one premium view.
+            </p>
+          </div>
 
-      {/* Metric cards */}
+          <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[420px]">
+            <div className="rounded-[24px] border border-white/70 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Region</p>
+              <p className="mt-2 text-lg font-bold text-slate-950">{user?.region || 'India'}</p>
+              <p className="mt-1 text-sm text-slate-500">Alerts and forecast tuned to your operating area</p>
+            </div>
+
+            <div className="rounded-[24px] border border-white/70 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Reports</p>
+              <p className="mt-2 text-lg font-bold text-slate-950">Operational Snapshot</p>
+              <button className="btn-primary mt-3 w-full" onClick={downloadReport} disabled={downloadingPdf} type="button">
+                <DownloadIcon />
+                {downloadingPdf ? 'Generating…' : 'Download PDF Report'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="grid gap-4 md:grid-cols-3">
         <MetricCard title="Crop Predictions" value={analytics.summary.cropPredictions} subtitle="Total prediction runs" accent="emerald" />
         <MetricCard title="Fertilizer Advice" value={analytics.summary.fertilizerRecommendations} subtitle="Generated recommendations" accent="sky" />
         <MetricCard title="Chat Queries" value={analytics.summary.chatQueries} subtitle="Farmer interactions" accent="amber" />
       </div>
 
-      {/* Weather alerts */}
       {displayAlerts.length ? (
-        <section className="card border-l-[3px] border-l-amber-400 p-5">
-          <h3 className="font-display text-xl text-slate-900">Weather Alerts</h3>
-          <div className="mt-3 space-y-2">
+        <section className="card border-l-[3px] border-l-amber-400 p-5 md:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="section-label text-amber-600">Live Advisory</p>
+              <h3 className="section-title mt-1">Weather Alerts</h3>
+            </div>
+            <div className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+              {displayAlerts.length} active
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
             {displayAlerts.map((alert, idx) => (
-              <p key={`${alert.type}-${idx}`} className="stagger-item flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2 text-sm text-amber-800">
-                <span>⚠️</span>
-                <span>{alert.date}: {alert.message}</span>
-              </p>
+              <div key={`${alert.type}-${idx}`} className="stagger-item rounded-2xl border border-amber-200 bg-amber-50/70 p-4 text-sm text-amber-900">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700">{alert.type || 'Weather Alert'}</p>
+                <p className="mt-2 font-semibold">{alert.date}</p>
+                <p className="mt-1 leading-6">{alert.message}</p>
+              </div>
             ))}
           </div>
         </section>
       ) : null}
 
-      {/* Weather widget */}
       <WeatherWidget weather={weather} />
 
-      {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="card p-5">
+        <section className="card p-5 md:p-6">
           <p className="section-label">Trend</p>
           <h3 className="section-title mt-1">Crop Confidence</h3>
           <p className="section-subtitle">Recent prediction confidence trajectory</p>
@@ -140,7 +168,7 @@ const DashboardPage = () => {
           </div>
         </section>
 
-        <section className="card p-5">
+        <section className="card p-5 md:p-6">
           <p className="section-label">Nutrients</p>
           <h3 className="section-title mt-1">Soil Health (NPK)</h3>
           <p className="section-subtitle">Nutrient profile from latest advisory</p>
@@ -158,12 +186,7 @@ const DashboardPage = () => {
         </section>
       </div>
 
-      {/* Download */}
       {downloadError ? <p className="rounded-card border border-red-200 bg-red-50 p-3 text-sm text-red-600">{downloadError}</p> : null}
-      <button className="btn-secondary" onClick={downloadReport} disabled={downloadingPdf} type="button">
-        <DownloadIcon />
-        {downloadingPdf ? 'Generating…' : 'Download PDF Report'}
-      </button>
     </div>
   );
 };

@@ -96,10 +96,10 @@ const GovernmentSchemesPage = () => {
 
   return (
     <div className="space-y-5 animate-fadeIn">
-      <section className="card p-5">
-        <p className="text-[10px] font-black uppercase tracking-[0.23em] text-emerald-700">Farmer Support</p>
-        <h2 className="font-display text-2xl font-bold text-slate-900">Government Schemes</h2>
-        <p className="mt-1 text-sm text-slate-600">
+      <section className="page-hero">
+        <p className="page-kicker">Farmer Support</p>
+        <h2 className="page-title">Government Schemes</h2>
+        <p className="page-copy">
           Discover active agriculture schemes, benefits, eligibility, and official application links.
         </p>
 
@@ -222,7 +222,7 @@ const GovernmentSchemesPage = () => {
           >
             Previous
           </button>
-          <span className="rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-slate-100">
+          <span className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
             Page {meta.page} of {meta.totalPages}
           </span>
           <button

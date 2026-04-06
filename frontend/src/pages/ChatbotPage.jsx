@@ -103,15 +103,13 @@ const ChatbotPage = () => {
 
   return (
     <div className="animate-fadeIn">
-      {/* Header */}
-      <div className="mb-5">
-        <p className="section-label">Farm Assistant</p>
-        <h1 className="section-title mt-1">Ask anything about farming</h1>
-        <p className="section-subtitle">Get crop guidance, disease help, fertilizer dosage, and seasonal tips.</p>
-      </div>
+      <section className="page-hero mb-5">
+        <p className="page-kicker">Farm Assistant</p>
+        <h1 className="page-title">Ask anything about farming</h1>
+        <p className="page-copy">Get crop guidance, disease help, fertilizer dosage, and seasonal tips through a production-ready AI assistant tuned to your region and language.</p>
+      </section>
 
       <div className="card overflow-hidden">
-        {/* Messages area */}
         <div className="h-[26rem] overflow-y-auto p-5">
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
@@ -120,10 +118,9 @@ const ChatbotPage = () => {
                   <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
                 </svg>
               </div>
-              <p className="text-sm font-medium text-slate-800">How can I help today?</p>
-              <p className="mt-1 text-xs text-slate-400">Pick a topic below or type your own question.</p>
+              <p className="text-base font-semibold text-slate-900">How can I help today?</p>
+              <p className="mt-1 max-w-md text-sm leading-6 text-slate-500">Pick a topic below or type your own question to get reliable farm guidance.</p>
 
-              {/* Suggestion chips */}
               <div className="mt-5 flex flex-wrap justify-center gap-2">
                 {SUGGESTIONS.map((s) => (
                   <button
@@ -145,7 +142,7 @@ const ChatbotPage = () => {
               className={`my-2.5 max-w-[80%] ${item.sender === 'user' ? 'ml-auto' : ''}`}
             >
               <div
-                className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                className={`rounded-[24px] px-4 py-3 text-sm leading-relaxed shadow-sm ${
                   item.sender === 'user'
                     ? 'bg-brand-500 text-white'
                     : 'border border-surface-200 bg-surface-50 text-slate-700'
@@ -169,7 +166,6 @@ const ChatbotPage = () => {
           ) : null}
         </div>
 
-        {/* Input bar */}
         <div className="border-t border-surface-200 bg-surface-50 p-4">
           <div className="flex gap-2">
             <textarea

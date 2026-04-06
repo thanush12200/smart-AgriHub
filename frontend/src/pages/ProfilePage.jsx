@@ -50,10 +50,11 @@ const ProfilePage = () => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 animate-fadeIn">
-      <div>
-        <h1 className="font-display text-3xl text-slate-900">Your Profile</h1>
-        <p className="mt-1 text-sm text-slate-500">Manage your account settings and preferences.</p>
-      </div>
+      <section className="page-hero">
+        <p className="page-kicker">Account</p>
+        <h1 className="page-title">Your Profile</h1>
+        <p className="page-copy">Manage personal details, location preferences, language, and account security from one place.</p>
+      </section>
 
       <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
         {/* Left Column: Avatar & Basic Info */}

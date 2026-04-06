@@ -38,10 +38,11 @@ const OrdersPage = () => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 animate-fadeIn">
-      <div>
-        <h1 className="font-display text-3xl text-slate-900">My Orders</h1>
-        <p className="mt-1 text-sm text-slate-500">Track and manage your marketplace purchases.</p>
-      </div>
+      <section className="page-hero">
+        <p className="page-kicker">Commerce</p>
+        <h1 className="page-title">My Orders</h1>
+        <p className="page-copy">Track and manage your marketplace purchases with clear status, payment, and delivery details.</p>
+      </section>
 
       {orders.length === 0 ? (
         <div className="card p-12 text-center text-slate-500">
