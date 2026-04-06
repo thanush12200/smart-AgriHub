@@ -43,11 +43,13 @@ export default {
         shell: '32px',
       },
       boxShadow: {
-        card: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
-        'card-hover': '0 8px 25px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)',
+        card: '0 4px 24px rgba(11,32,22,0.1), 0 1px 4px rgba(255,255,255,0.08) inset',
+        'card-hover': '0 12px 40px rgba(11,32,22,0.14), 0 0 0 1px rgba(26,122,76,0.22)',
         soft: '0 2px 8px rgba(0,0,0,0.05)',
-        shell: '0 20px 60px rgba(11, 32, 24, 0.08)',
-        glow: '0 12px 30px rgba(26, 122, 76, 0.18)',
+        shell: '0 8px 32px rgba(11, 32, 24, 0.12), 0 1px 0 rgba(255,255,255,0.1) inset',
+        glow: '0 8px 28px rgba(26, 122, 76, 0.28)',
+        'glow-accent': '0 8px 28px rgba(200, 97, 31, 0.28)',
+        depth: '0 24px 64px rgba(11, 32, 24, 0.2)',
       },
       animation: {
         'fade-in': 'fadeIn 0.4s ease-out',
