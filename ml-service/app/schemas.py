@@ -4,21 +4,24 @@ from pydantic import BaseModel, Field
 
 
 class CropPredictionRequest(BaseModel):
-    soilType: str
-    rainfall: float = Field(..., ge=0)
-    temperature: float = Field(..., ge=-10, le=60)
-    region: str
-
-
-class FertilizerNPK(BaseModel):
-    n: float = Field(..., ge=0)
-    p: float = Field(..., ge=0)
-    k: float = Field(..., ge=0)
+    N: float = Field(..., ge=0, le=150, description="Nitrogen ratio in soil")
+    P: float = Field(..., ge=0, le=150, description="Phosphorous ratio in soil")
+    K: float = Field(..., ge=0, le=210, description="Potassium ratio in soil")
+    temperature: float = Field(..., ge=-10, le=60, description="Temperature in Celsius")
+    humidity: float = Field(..., ge=0, le=100, description="Relative humidity %")
+    ph: float = Field(..., ge=0, le=14, description="Soil pH value")
+    rainfall: float = Field(..., ge=0, le=500, description="Rainfall in mm")
 
 
 class FertilizerRequest(BaseModel):
-    crop: str
-    npk: FertilizerNPK
+    temperature: float = Field(..., ge=0, le=60)
+    humidity: float = Field(..., ge=0, le=100)
+    moisture: float = Field(..., ge=0, le=100)
+    soilType: str
+    cropType: str
+    nitrogen: float = Field(..., ge=0, le=150)
+    phosphorous: float = Field(..., ge=0, le=150)
+    potassium: float = Field(..., ge=0, le=150)
 
 
 class ChatQueryRequest(BaseModel):

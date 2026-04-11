@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import useDocTitle from '../hooks/useDocTitle';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosClient';
 import Badge from '../components/Badge';
+
+const TimelineScene = lazy(() => import('../components/3d/TimelineScene'));
 
 
 
@@ -35,14 +37,39 @@ const PredictionHistoryPage = () => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 animate-fadeIn">
-      <section className="page-hero">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="page-kicker">Decision Trail</p>
-            <h1 className="page-title">Prediction History</h1>
-            <p className="page-copy">Review past crop and fertilizer analyses, then reuse any previous input set to move faster.</p>
+      <section
+        className="relative overflow-hidden rounded-[32px]"
+        style={{
+          background: 'linear-gradient(160deg, #071510 0%, #0a1e14 60%, #0e2818 100%)',
+          border: '1px solid rgba(41,160,100,0.2)',
+          minHeight: 220,
+        }}
+      >
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <TimelineScene className="w-full h-full" />
+          </Suspense>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-wrap items-end justify-between gap-4 p-6 md:p-8 min-h-[220px]">
+          <div className="flex flex-col justify-end">
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 w-fit"
+              style={{ background: 'rgba(41,160,100,0.15)', border: '1px solid rgba(41,160,100,0.3)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#7ad5a0' }}>
+                Decision Trail
+              </span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+              Prediction History
+            </h1>
+            <p className="mt-2 max-w-lg text-sm leading-7" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              Review past crop and fertilizer analyses, then reuse any previous input set to move faster.
+            </p>
           </div>
-          <select className="input w-48" value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <select className="input w-48" value={filter} onChange={(e) => setFilter(e.target.value)}
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
             <option value="all">All Predictions</option>
             <option value="crop">Crop Only</option>
             <option value="fertilizer">Fertilizer Only</option>

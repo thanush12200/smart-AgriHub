@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, Suspense, lazy } from 'react';
 import useDocTitle from '../hooks/useDocTitle';
+
+const WeatherGlobeScene = lazy(() => import('../components/3d/WeatherGlobeScene'));
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
@@ -82,21 +84,48 @@ const WeatherPredictionPage = () => {
 
   return (
     <div className="space-y-5 animate-fadeIn">
-      <section className="page-hero">
-        <p className="page-kicker text-sky-700">Prediction Input</p>
-        <h2 className="page-title">Weather Prediction System</h2>
-        <p className="page-copy">Get current weather, a 7-day forecast trend, and farming risk indicators by region.</p>
-
-        <form className="mt-4 grid gap-3 md:grid-cols-[1fr_auto_auto]" onSubmit={handleSearch}>
-          <input
-            className="input"
-            placeholder="Enter region, city, or district"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button className="btn-primary" type="submit">Predict</button>
-          <button className="btn-secondary" type="button" onClick={() => loadWeather(region)}>Refresh</button>
-        </form>
+      <section
+        className="relative overflow-hidden rounded-[32px]"
+        style={{
+          background: 'linear-gradient(160deg, #071510 0%, #0a1e14 60%, #0e2818 100%)',
+          border: '1px solid rgba(41,160,100,0.2)',
+          minHeight: 240,
+        }}
+      >
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <WeatherGlobeScene className="w-full h-full" />
+          </Suspense>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col justify-end p-6 md:p-8 min-h-[240px]">
+          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 w-fit"
+            style={{ background: 'rgba(56,189,248,0.15)', border: '1px solid rgba(56,189,248,0.3)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#7dd3fc' }}>
+              Prediction Input
+            </span>
+          </div>
+          <h2 className="font-display text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+            Weather Prediction System
+          </h2>
+          <p className="mt-2 max-w-lg text-sm leading-7" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Get current weather, a 7-day forecast trend, and farming risk indicators by region.
+          </p>
+          <form className="mt-4 grid gap-3 md:grid-cols-[1fr_auto_auto]" onSubmit={handleSearch}>
+            <input
+              className="input"
+              placeholder="Enter region, city, or district"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
+            />
+            <button className="btn-primary" type="submit">Predict</button>
+            <button className="btn-secondary" type="button" onClick={() => loadWeather(region)}
+              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>Refresh</button>
+          </form>
+        </div>
       </section>
 
       {loading ? (

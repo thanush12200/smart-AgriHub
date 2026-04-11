@@ -6,9 +6,9 @@ import { motion } from 'framer-motion';
 const NutrientOrbitScene = lazy(() => import('../components/3d/NutrientOrbitScene'));
 
 const NPK_META = {
-  n: { color: '#41b878', label: 'Nitrogen', desc: 'Leaf growth & chlorophyll' },
-  p: { color: '#38bdf8', label: 'Phosphorus', desc: 'Root & flower development' },
-  k: { color: '#f0aa73', label: 'Potassium', desc: 'Disease resistance & yield' },
+  nitrogen: { color: '#41b878', label: 'Nitrogen', desc: 'Leaf growth & chlorophyll' },
+  phosphorous: { color: '#38bdf8', label: 'Phosphorus', desc: 'Root & flower development' },
+  potassium: { color: '#f0aa73', label: 'Potassium', desc: 'Disease resistance & yield' },
 };
 
 const container = {
@@ -22,7 +22,11 @@ const item = {
 
 export default function FertilizerPage() {
   useDocTitle('Fertilizer Advisor');
-  const [input, setInput] = useState({ crop: 'rice', npk: { n: 30, p: 25, k: 28 } });
+  const [input, setInput] = useState({
+    cropType: 'Paddy', soilType: 'Loamy',
+    nitrogen: 30, phosphorous: 25, potassium: 28,
+    temperature: 28, humidity: 65, moisture: 40,
+  });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -83,8 +87,8 @@ export default function FertilizerPage() {
             {Object.entries(NPK_META).map(([key, meta]) => (
               <div key={key} className="rounded-xl px-3 py-2 flex items-center gap-2"
                 style={{ background: 'rgba(0,0,0,0.4)', border: `1px solid ${meta.color}30` }}>
-                <span className="text-xs font-black" style={{ color: meta.color }}>{key.toUpperCase()}</span>
-                <span className="text-sm font-bold text-white">{input.npk[key]}</span>
+                <span className="text-xs font-black" style={{ color: meta.color }}>{key.charAt(0).toUpperCase()}</span>
+                <span className="text-sm font-bold text-white">{input[key]}</span>
               </div>
             ))}
           </div>
@@ -103,28 +107,66 @@ export default function FertilizerPage() {
           <div>
             <label className="field-label">Crop</label>
             <div className="flex flex-wrap gap-2 mt-1.5 mb-2">
-              {['rice', 'wheat', 'maize', 'cotton', 'sugarcane', 'soybean'].map(crop => (
+              {['Paddy', 'Wheat', 'Maize', 'Cotton', 'Sugarcane', 'Millets', 'Barley', 'Pulses', 'Oil seeds', 'Ground Nuts', 'Tobacco'].map(crop => (
                 <button
                   key={crop}
                   type="button"
-                  onClick={() => setInput({ ...input, crop })}
+                  onClick={() => setInput({ ...input, cropType: crop })}
                   className="rounded-xl px-3 py-1.5 text-xs font-semibold capitalize transition-all"
                   style={{
-                    background: input.crop === crop ? 'rgba(240,170,115,0.15)' : 'var(--bg-elevated)',
-                    border: input.crop === crop ? '1px solid rgba(240,170,115,0.4)' : '1px solid var(--border-light)',
-                    color: input.crop === crop ? 'var(--accent-500)' : 'var(--text-secondary)',
+                    background: input.cropType === crop ? 'rgba(240,170,115,0.15)' : 'var(--bg-elevated)',
+                    border: input.cropType === crop ? '1px solid rgba(240,170,115,0.4)' : '1px solid var(--border-light)',
+                    color: input.cropType === crop ? 'var(--accent-500)' : 'var(--text-secondary)',
                   }}
                 >
                   {crop}
                 </button>
               ))}
             </div>
-            <input
-              className="input"
-              placeholder="Or type crop name…"
-              value={input.crop}
-              onChange={(e) => setInput({ ...input, crop: e.target.value })}
-            />
+          </div>
+
+          {/* Soil type pills */}
+          <div>
+            <label className="field-label">Soil Type</label>
+            <div className="flex flex-wrap gap-2 mt-1.5">
+              {['Sandy', 'Loamy', 'Black', 'Red', 'Clayey'].map(soil => (
+                <button
+                  key={soil}
+                  type="button"
+                  onClick={() => setInput({ ...input, soilType: soil })}
+                  className="rounded-xl px-3 py-1.5 text-xs font-semibold capitalize transition-all"
+                  style={{
+                    background: input.soilType === soil ? 'rgba(26,122,76,0.15)' : 'var(--bg-elevated)',
+                    border: input.soilType === soil ? '1px solid rgba(26,122,76,0.4)' : '1px solid var(--border-light)',
+                    color: input.soilType === soil ? 'var(--brand-500)' : 'var(--text-secondary)',
+                  }}
+                >
+                  {soil}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Environment inputs */}
+          <div>
+            <label className="field-label">Environment</label>
+            <div className="grid grid-cols-3 gap-3 mt-1.5">
+              <div>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Temp (°C)</span>
+                <input className="input mt-1" type="number" step="0.1" value={input.temperature}
+                  onChange={(e) => setInput({ ...input, temperature: Number(e.target.value) })} />
+              </div>
+              <div>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Humidity (%)</span>
+                <input className="input mt-1" type="number" step="0.1" min={0} max={100} value={input.humidity}
+                  onChange={(e) => setInput({ ...input, humidity: Number(e.target.value) })} />
+              </div>
+              <div>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Moisture (%)</span>
+                <input className="input mt-1" type="number" step="0.1" min={0} max={100} value={input.moisture}
+                  onChange={(e) => setInput({ ...input, moisture: Number(e.target.value) })} />
+              </div>
+            </div>
           </div>
 
           {/* NPK inputs with visual styling */}
@@ -137,28 +179,28 @@ export default function FertilizerPage() {
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center"
                         style={{ background: `${meta.color}18`, color: meta.color, border: `1px solid ${meta.color}30` }}>
-                        {key.toUpperCase()}
+                        {key.charAt(0).toUpperCase()}
                       </span>
                       <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{meta.label}</span>
                       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>— {meta.desc}</span>
                     </div>
-                    <span className="text-sm font-bold" style={{ color: meta.color }}>{input.npk[key]}</span>
+                    <span className="text-sm font-bold" style={{ color: meta.color }}>{input[key]}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <input
                       type="range"
                       min={0}
                       max={100}
-                      value={input.npk[key]}
-                      onChange={(e) => setInput({ ...input, npk: { ...input.npk, [key]: Number(e.target.value) } })}
+                      value={input[key]}
+                      onChange={(e) => setInput({ ...input, [key]: Number(e.target.value) })}
                       className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
                       style={{ accentColor: meta.color }}
                     />
                     <input
                       className="input w-20 text-center text-sm"
                       type="number"
-                      value={input.npk[key]}
-                      onChange={(e) => setInput({ ...input, npk: { ...input.npk, [key]: Number(e.target.value) } })}
+                      value={input[key]}
+                      onChange={(e) => setInput({ ...input, [key]: Number(e.target.value) })}
                     />
                   </div>
                 </div>
@@ -235,27 +277,27 @@ export default function FertilizerPage() {
                     <div key={key} className="flex items-center gap-3 text-sm">
                       <span className="w-7 h-7 rounded-lg text-xs font-black flex items-center justify-center flex-shrink-0"
                         style={{ background: `${meta.color}18`, color: meta.color }}>
-                        {key.toUpperCase()}
+                        {key.charAt(0).toUpperCase()}
                       </span>
                       <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ background: 'var(--border-light)' }}>
                         <motion.div
                           className="h-full rounded-full"
                           style={{ background: `linear-gradient(90deg, ${meta.color}, ${meta.color}aa)` }}
                           initial={{ width: 0 }}
-                          animate={{ width: `${Math.min(100, input.npk[key])}%` }}
+                          animate={{ width: `${Math.min(100, input[key])}%` }}
                           transition={{ duration: 0.8, ease: 'easeOut' }}
                         />
                       </div>
                       <span className="w-10 text-right font-bold text-sm" style={{ color: meta.color }}>
-                        {input.npk[key]}
+                        {input[key]}
                       </span>
                     </div>
                   ))}
                 </div>
                 <div className="mt-4 pt-3 text-xs" style={{ borderTop: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>
                   <span className="font-bold" style={{ color: 'var(--text-primary)' }}>Avg Score: </span>
-                  {Math.round((input.npk.n + input.npk.p + input.npk.k) / 3)}/100
-                  {input.npk.n < 30 && (
+                  {Math.round((input.nitrogen + input.phosphorous + input.potassium) / 3)}/100
+                  {input.nitrogen < 30 && (
                     <span className="ml-2" style={{ color: 'var(--accent-500)' }}>
                       · Low N: consider planting legumes.
                     </span>

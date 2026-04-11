@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, Suspense, lazy } from 'react';
 import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
+
+const GovShieldScene = lazy(() => import('../components/3d/GovShieldScene'));
 
 const modeOptions = [
   { value: 'all', label: 'All Modes' },
@@ -96,45 +98,73 @@ const GovernmentSchemesPage = () => {
 
   return (
     <div className="space-y-5 animate-fadeIn">
-      <section className="page-hero">
-        <p className="page-kicker">Farmer Support</p>
-        <h2 className="page-title">Government Schemes</h2>
-        <p className="page-copy">
-          Discover active agriculture schemes, benefits, eligibility, and official application links.
-        </p>
+      <section
+        className="relative overflow-hidden rounded-[32px]"
+        style={{
+          background: 'linear-gradient(160deg, #071510 0%, #0a1e14 60%, #0e2818 100%)',
+          border: '1px solid rgba(41,160,100,0.2)',
+          minHeight: 260,
+        }}
+      >
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <GovShieldScene className="w-full h-full" />
+          </Suspense>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col justify-end p-6 md:p-8 min-h-[260px]">
+          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 w-fit"
+            style={{ background: 'rgba(41,160,100,0.15)', border: '1px solid rgba(41,160,100,0.3)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#7ad5a0' }}>
+              Farmer Support
+            </span>
+          </div>
+          <h2 className="font-display text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+            Government Schemes
+          </h2>
+          <p className="mt-2 max-w-lg text-sm leading-7" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Discover active agriculture schemes, benefits, eligibility, and official application links.
+          </p>
 
-        <form className="mt-4 grid gap-3 lg:grid-cols-[2fr_1fr_1fr_1fr_auto]" onSubmit={handleSearch}>
-          <input
-            className="input"
-            placeholder="Search by scheme, benefit, ministry, or keyword..."
-            value={query.search}
-            onChange={(event) => setQuery((current) => ({ ...current, search: event.target.value }))}
-          />
+          <form className="mt-4 grid gap-3 lg:grid-cols-[2fr_1fr_1fr_1fr_auto]" onSubmit={handleSearch}>
+            <input
+              className="input"
+              placeholder="Search by scheme, benefit, ministry, or keyword..."
+              value={query.search}
+              onChange={(event) => setQuery((current) => ({ ...current, search: event.target.value }))}
+              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
+            />
 
-          <select className="input" value={query.category} onChange={(event) => handleFilterChange('category', event.target.value)}>
-            <option value="all">All Categories</option>
-            {categories.map((item) => (
-              <option key={item} value={item}>{formatCategory(item)}</option>
-            ))}
-          </select>
+            <select className="input" value={query.category} onChange={(event) => handleFilterChange('category', event.target.value)}
+              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
+              <option value="all">All Categories</option>
+              {categories.map((item) => (
+                <option key={item} value={item}>{formatCategory(item)}</option>
+              ))}
+            </select>
 
-          <select className="input" value={query.mode} onChange={(event) => handleFilterChange('mode', event.target.value)}>
-            {modeOptions.map((item) => (
-              <option key={item.value} value={item.value}>{item.label}</option>
-            ))}
-          </select>
+            <select className="input" value={query.mode} onChange={(event) => handleFilterChange('mode', event.target.value)}
+              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>
+              {modeOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
 
-          <input
-            className="input"
-            placeholder="State / Region"
-            value={query.state}
-            onChange={(event) => setQuery((current) => ({ ...current, state: event.target.value }))}
-          />
+            <input
+              className="input"
+              placeholder="State / Region"
+              value={query.state}
+              onChange={(event) => setQuery((current) => ({ ...current, state: event.target.value }))}
+              style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
+            />
 
-          <button className="btn-primary" type="submit">Search</button>
-        </form>
+            <button className="btn-primary" type="submit">Search</button>
+          </form>
 
-        <p className="mt-3 text-xs text-slate-500">{paginationLabel}</p>
+          <p className="mt-3 text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{paginationLabel}</p>
+        </div>
       </section>
 
       {loading ? (

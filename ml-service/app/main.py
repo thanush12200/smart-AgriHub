@@ -8,7 +8,7 @@ from .model_loader import ModelStore
 from .plant_features import build_plant_model_vector, extract_plant_features_from_base64
 from .schemas import ChatQueryRequest, CropPredictionRequest, FertilizerRequest, PlantDetectionRequest
 
-app = FastAPI(title="Smart Agri Hub ML Service", version="1.0.0")
+app = FastAPI(title="Smart Agri Hub ML Service", version="3.0.0")
 store = ModelStore(model_dir="models")
 
 
@@ -22,27 +22,48 @@ DISEASE_RULES = {
     "yellow": "Yellow leaves may indicate nitrogen deficiency. Apply split nitrogen doses and check root health.",
     "wilt": "Wilting can be due to root rot or water stress. Improve drainage and use a bio-fungicide drench.",
     "powdery": "Powdery mildew control: sulfur spray in early morning and improve airflow between plants.",
+    "blight": "For blight, remove affected plant parts. Apply mancozeb or copper oxychloride spray at 7-day intervals.",
+    "rust": "Rust diseases spread in humid conditions. Apply propiconazole and improve plant spacing for air circulation.",
+    "borer": "For stem/fruit borers, use pheromone traps for monitoring. Apply neem oil or Bt-based bio-pesticides.",
+    "aphid": "Aphids can be controlled with neem oil spray or introducing ladybugs. Avoid excessive nitrogen fertilizer.",
+    "mosaic": "Viral mosaic has no cure. Remove infected plants immediately. Control whitefly vectors with yellow sticky traps.",
+    "rot": "Root rot needs improved drainage. Apply Trichoderma-based bio-fungicide and avoid waterlogging.",
 }
 
 ORGANIC_MAP = {
-    "Urea": ["Composted farmyard manure", "Vermicompost tea"],
-    "DAP": ["Bone meal", "Rock phosphate with compost"],
+    "Urea": ["Composted farmyard manure", "Vermicompost tea", "Green manure (dhaincha/sunhemp)"],
+    "DAP": ["Bone meal", "Rock phosphate with compost", "Fish meal"],
+    "14-35-14": ["Jeevamrutham", "Panchagavya foliar spray"],
+    "28-28": ["Vermicompost + bone meal blend", "Composted poultry manure"],
+    "17-17-17": ["Jeevamrutham", "Fish amino acid blend", "Balanced compost mix"],
+    "20-20": ["Mustard cake + wood ash", "Green manure incorporation"],
+    "10-26-26": ["Rock phosphate + wood ash", "Banana peel compost + bone meal"],
     "MOP": ["Wood ash (controlled)", "Banana peel compost"],
     "NPK 19-19-19": ["Jeevamrutham", "Fish amino acid blend"],
     "Ammonium Sulphate": ["Mustard cake", "Green manure crops"],
 }
 
+# Ideal NPK ranges for crops (expanded)
 IDEAL_NPK = {
-    "rice": {"n": 60, "p": 35, "k": 40},
-    "wheat": {"n": 55, "p": 30, "k": 30},
-    "maize": {"n": 65, "p": 35, "k": 35},
-    "cotton": {"n": 50, "p": 30, "k": 45},
-    "sugarcane": {"n": 70, "p": 40, "k": 50},
+    "rice":       {"n": 80, "p": 48, "k": 40},
+    "wheat":      {"n": 55, "p": 30, "k": 30},
+    "maize":      {"n": 78, "p": 48, "k": 20},
+    "cotton":     {"n": 120, "p": 46, "k": 20},
+    "sugarcane":  {"n": 70, "p": 40, "k": 50},
+    "paddy":      {"n": 80, "p": 48, "k": 40},
+    "millets":    {"n": 40, "p": 20, "k": 20},
+    "barley":     {"n": 50, "p": 25, "k": 25},
+    "tobacco":    {"n": 60, "p": 30, "k": 40},
+    "pulses":     {"n": 20, "p": 60, "k": 20},
+    "oil seeds":  {"n": 40, "p": 35, "k": 30},
+    "ground nuts": {"n": 25, "p": 50, "k": 40},
 }
 
 LANGUAGE_SNIPPETS = {
     "hi": "सलाह: ",
     "kn": "ಸಲಹೆ: ",
+    "ta": "ஆலோசனை: ",
+    "te": "సలహా: ",
 }
 
 PLANT_PROFILES = {
@@ -112,14 +133,46 @@ DEFAULT_PLANT_PROFILE = {
     ],
 }
 
+# Crop info metadata for richer prediction responses
+CROP_INFO = {
+    "rice": {"season": "Kharif", "waterNeed": "High", "growthDays": "120-150"},
+    "maize": {"season": "Kharif/Rabi", "waterNeed": "Moderate", "growthDays": "80-110"},
+    "chickpea": {"season": "Rabi", "waterNeed": "Low", "growthDays": "90-120"},
+    "kidneybeans": {"season": "Rabi", "waterNeed": "Moderate", "growthDays": "90-120"},
+    "pigeonpeas": {"season": "Kharif", "waterNeed": "Low", "growthDays": "120-180"},
+    "mothbeans": {"season": "Kharif", "waterNeed": "Very Low", "growthDays": "60-90"},
+    "mungbean": {"season": "Kharif/Zaid", "waterNeed": "Low", "growthDays": "60-75"},
+    "blackgram": {"season": "Kharif", "waterNeed": "Low", "growthDays": "80-90"},
+    "lentil": {"season": "Rabi", "waterNeed": "Low", "growthDays": "100-120"},
+    "pomegranate": {"season": "Year-round", "waterNeed": "Moderate", "growthDays": "150-180"},
+    "banana": {"season": "Year-round", "waterNeed": "High", "growthDays": "300-365"},
+    "mango": {"season": "Summer fruit", "waterNeed": "Moderate", "growthDays": "100-150 (fruiting)"},
+    "grapes": {"season": "Year-round", "waterNeed": "Moderate", "growthDays": "150-180"},
+    "watermelon": {"season": "Summer", "waterNeed": "High", "growthDays": "80-90"},
+    "muskmelon": {"season": "Summer", "waterNeed": "Moderate", "growthDays": "70-90"},
+    "apple": {"season": "Temperate", "waterNeed": "Moderate", "growthDays": "150-180"},
+    "orange": {"season": "Year-round", "waterNeed": "Moderate", "growthDays": "200-300"},
+    "papaya": {"season": "Year-round", "waterNeed": "Moderate", "growthDays": "270-330"},
+    "coconut": {"season": "Tropical", "waterNeed": "High", "growthDays": "365+"},
+    "cotton": {"season": "Kharif", "waterNeed": "Moderate", "growthDays": "150-180"},
+    "jute": {"season": "Kharif", "waterNeed": "High", "growthDays": "120-150"},
+    "coffee": {"season": "Year-round", "waterNeed": "Moderate", "growthDays": "60-90 (cherry)"},
+}
 
-def _top_feature_importance(pipeline, top_n: int = 5) -> List[Dict[str, float]]:
+
+def _top_feature_importance(pipeline, feature_names: List[str] = None, top_n: int = 5) -> List[Dict[str, float]]:
     model = pipeline.named_steps["model"]
-    preprocessor = pipeline.named_steps["preprocessor"]
-    names = preprocessor.get_feature_names_out()
     importances = model.feature_importances_
+
+    if feature_names is None:
+        if hasattr(pipeline, "named_steps") and "preprocessor" in pipeline.named_steps:
+            preprocessor = pipeline.named_steps["preprocessor"]
+            feature_names = list(preprocessor.get_feature_names_out())
+        else:
+            feature_names = [f"feature_{i}" for i in range(len(importances))]
+
     ranked = np.argsort(importances)[::-1][:top_n]
-    return [{"feature": str(names[i]), "importance": float(round(importances[i], 4))} for i in ranked]
+    return [{"feature": str(feature_names[i] if i < len(feature_names) else f"f{i}"), "importance": float(round(importances[i], 4))} for i in ranked]
 
 
 def _maybe_localize(text: str, language: str) -> str:
@@ -268,7 +321,6 @@ def _detect_plant_from_features(features: np.ndarray, signals: Dict[str, float])
     green_ratio = signals.get("greenRatio", 0.0)
     mean_green = float(features[0])
 
-    # Strong tomato visual cues (ripe red fruit + green foliage) should override weak nearest-signature matches.
     if tomato_scene_score >= 0.72 and red_ratio >= 0.08 and (green_ratio >= 0.03 or mean_green >= 0.33):
         tomato_confidence = float(round(min(0.93, max(confidence, 0.58 + (tomato_scene_score * 0.28))), 4))
         tomato_top_matches = [{"crop": "tomato", "score": tomato_confidence}]
@@ -342,24 +394,39 @@ def predict_crop(payload: CropPredictionRequest) -> Dict:
     features = pd.DataFrame(
         [
             {
-                "soilType": payload.soilType.lower(),
-                "rainfall": payload.rainfall,
+                "N": payload.N,
+                "P": payload.P,
+                "K": payload.K,
                 "temperature": payload.temperature,
-                "region": payload.region,
+                "humidity": payload.humidity,
+                "ph": payload.ph,
+                "rainfall": payload.rainfall,
             }
         ]
     )
 
     probs = store.crop_model.predict_proba(features)[0]
     labels = store.crop_model.classes_
-    idx = np.argsort(probs)[::-1][:3]
+    idx = np.argsort(probs)[::-1][:5]
 
-    recommendations = [{"crop": str(labels[i]), "score": float(round(float(probs[i]), 4))} for i in idx]
+    recommendations = []
+    for i in idx:
+        crop_name = str(labels[i])
+        info = CROP_INFO.get(crop_name, {})
+        recommendations.append({
+            "crop": crop_name,
+            "score": float(round(float(probs[i]), 4)),
+            "season": info.get("season", "—"),
+            "waterNeed": info.get("waterNeed", "—"),
+            "growthDays": info.get("growthDays", "—"),
+        })
+
+    crop_features = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
 
     return {
         "recommendations": recommendations,
         "confidence": recommendations[0]["score"],
-        "featureImportance": _top_feature_importance(store.crop_model),
+        "featureImportance": _top_feature_importance(store.crop_model, feature_names=crop_features),
         "modelVersion": store.metadata.get("version", "v1"),
     }
 
@@ -369,10 +436,14 @@ def predict_fertilizer(payload: FertilizerRequest) -> Dict:
     features = pd.DataFrame(
         [
             {
-                "crop": payload.crop.lower(),
-                "n": payload.npk.n,
-                "p": payload.npk.p,
-                "k": payload.npk.k,
+                "soilType": payload.soilType,
+                "cropType": payload.cropType,
+                "temperature": payload.temperature,
+                "humidity": payload.humidity,
+                "moisture": payload.moisture,
+                "nitrogen": payload.nitrogen,
+                "phosphorous": payload.phosphorous,
+                "potassium": payload.potassium,
             }
         ]
     )
@@ -382,11 +453,16 @@ def predict_fertilizer(payload: FertilizerRequest) -> Dict:
     best_idx = int(np.argmax(probs))
     fertilizer = str(labels[best_idx])
 
-    ideal = IDEAL_NPK.get(payload.crop.lower(), {"n": 55, "p": 35, "k": 35})
+    # Get top 3 recommendations
+    sorted_idx = np.argsort(probs)[::-1][:3]
+    alternatives = [{"name": str(labels[i]), "score": float(round(float(probs[i]), 4))} for i in sorted_idx]
+
+    crop_key = payload.cropType.lower()
+    ideal = IDEAL_NPK.get(crop_key, {"n": 55, "p": 35, "k": 35})
     deficits = {
-        "n": max(0, ideal["n"] - payload.npk.n),
-        "p": max(0, ideal["p"] - payload.npk.p),
-        "k": max(0, ideal["k"] - payload.npk.k),
+        "n": max(0, ideal["n"] - payload.nitrogen),
+        "p": max(0, ideal["p"] - payload.phosphorous),
+        "k": max(0, ideal["k"] - payload.potassium),
     }
 
     dosage = round(25 + (deficits["n"] * 0.6) + (deficits["p"] * 0.5) + (deficits["k"] * 0.5), 2)
@@ -396,6 +472,8 @@ def predict_fertilizer(payload: FertilizerRequest) -> Dict:
         "dosageKgPerAcre": dosage,
         "organicAlternatives": ORGANIC_MAP.get(fertilizer, ["Compost", "Vermicompost"]),
         "confidence": float(round(float(probs[best_idx]), 4)),
+        "alternatives": alternatives,
+        "deficits": deficits,
         "modelVersion": store.metadata.get("version", "v1"),
     }
 
@@ -412,21 +490,31 @@ def chatbot_query(payload: ChatQueryRequest) -> Dict:
     intent = str(intents[best_idx])
 
     source = "ml"
-    if confidence >= 0.55:
+    if confidence >= 0.50:
         if intent == "crop_query":
             answer = (
                 "Based on your conditions, shortlist drought-tolerant and region-suited crops. "
-                "Share soil type, rainfall, and temperature for a precise prediction."
+                "Share soil type, NPK levels, rainfall, temperature, humidity, and pH for a precise prediction."
             )
         elif intent == "fertilizer_help":
             answer = (
-                "Use balanced NPK after soil testing. For immediate guidance, share crop and NPK values "
-                "to get dosage and organic alternatives."
+                "Use balanced NPK after soil testing. For immediate guidance, share crop, soil type, "
+                "NPK values, temperature, humidity, and moisture to get dosage and organic alternatives."
             )
         elif intent == "disease_help":
             answer = (
                 "Start with symptom isolation, remove infected leaves, and apply targeted bio-fungicide or pesticide "
                 "based on observed symptom cluster."
+            )
+        elif intent == "irrigation_advice":
+            answer = (
+                "Irrigation needs depend on crop type, growth stage, and soil moisture. "
+                "Drip irrigation is most efficient. Monitor soil moisture at root zone for optimal scheduling."
+            )
+        elif intent == "market_info":
+            answer = (
+                "Check e-NAM portal or local APMC mandi for current prices. "
+                "Consider FPO membership for better negotiation power and direct market access."
             )
         else:
             season = "kharif" if any(token in lower for token in ["rain", "monsoon", "kharif"]) else "rabi"
@@ -441,10 +529,14 @@ def chatbot_query(payload: ChatQueryRequest) -> Dict:
                 answer = rule_answer
                 break
 
-        if "fertilizer" in lower or "npk" in lower:
-            answer = "For fertilizer advice, provide crop name and NPK values. I will suggest dosage per acre."
-        elif "crop" in lower or "soil" in lower:
-            answer = "For crop recommendation, share soil type, rainfall (mm), temperature (deg C), and region."
+        if "fertilizer" in lower or "npk" in lower or "urea" in lower:
+            answer = "For fertilizer advice, provide crop name, soil type, and NPK values along with temperature, humidity, and moisture. I will suggest dosage per acre."
+        elif "crop" in lower or "soil" in lower or "plant" in lower:
+            answer = "For crop recommendation, share NPK levels, temperature, humidity, soil pH, and rainfall."
+        elif "water" in lower or "irrigat" in lower:
+            answer = "For irrigation advice, specify your crop, growth stage, and current soil moisture level."
+        elif "price" in lower or "market" in lower or "sell" in lower:
+            answer = "Check e-NAM portal or local APMC mandi for current market prices. I can help with general market guidance."
 
     if payload.context:
         answer = f"Considering recent context: {payload.context[-1]}. {answer}"

@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
+
+const JournalBookScene = lazy(() => import('../components/3d/JournalBookScene'));
 
 const JournalPage = () => {
   useDocTitle('Farm Journal');
@@ -103,12 +105,36 @@ const JournalPage = () => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 animate-fadeIn">
-      <section className="page-hero">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="page-kicker">Field Records</p>
-            <h1 className="page-title">Farm Journal</h1>
-            <p className="page-copy">Record your field activities, create a durable operating history, and keep crop progress easy to trace.</p>
+      <section
+        className="relative overflow-hidden rounded-[32px]"
+        style={{
+          background: 'linear-gradient(160deg, #071510 0%, #0e1e14 60%, #12281c 100%)',
+          border: '1px solid rgba(200,97,31,0.2)',
+          minHeight: 220,
+        }}
+      >
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <JournalBookScene className="w-full h-full" />
+          </Suspense>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-wrap items-end justify-between gap-4 p-6 md:p-8 min-h-[220px]">
+          <div className="flex flex-col justify-end">
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 w-fit"
+              style={{ background: 'rgba(200,97,31,0.15)', border: '1px solid rgba(200,97,31,0.3)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+              <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#f0aa73' }}>
+                Field Records
+              </span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+              Farm Journal
+            </h1>
+            <p className="mt-2 max-w-lg text-sm leading-7" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              Record your field activities, create a durable operating history, and keep crop progress easy to trace.
+            </p>
           </div>
           <button className="btn-primary" onClick={() => openForm()}>+ New Entry</button>
         </div>

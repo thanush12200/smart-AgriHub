@@ -5,15 +5,23 @@ const { invokeML } = require('../services/mlClient');
 const PredictionLog = require('../models/PredictionLog');
 
 const recommendFertilizer = asyncHandler(async (req, res) => {
-  const { crop, npk } = req.body;
+  const { cropType, soilType, nitrogen, phosphorous, potassium, temperature, humidity, moisture } = req.body;
 
-  if (!crop || !npk || npk.n === undefined || npk.p === undefined || npk.k === undefined) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'crop and npk (n,p,k) are required');
+  if (!cropType || !soilType ||
+      nitrogen === undefined || phosphorous === undefined || potassium === undefined ||
+      temperature === undefined || humidity === undefined || moisture === undefined) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'cropType, soilType, nitrogen, phosphorous, potassium, temperature, humidity, and moisture are required');
   }
 
   const payload = {
-    crop,
-    npk: { n: Number(npk.n), p: Number(npk.p), k: Number(npk.k) }
+    cropType,
+    soilType,
+    nitrogen: Number(nitrogen),
+    phosphorous: Number(phosphorous),
+    potassium: Number(potassium),
+    temperature: Number(temperature),
+    humidity: Number(humidity),
+    moisture: Number(moisture),
   };
 
   const recommendation = await invokeML('/predict/fertilizer', payload);

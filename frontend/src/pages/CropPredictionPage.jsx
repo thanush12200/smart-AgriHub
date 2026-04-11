@@ -18,7 +18,7 @@ const item = {
 
 export default function CropPredictionPage() {
   useDocTitle('Crop Prediction');
-  const [input, setInput] = useState({ soilType: 'black', rainfall: 120, temperature: 28, region: 'Karnataka' });
+  const [input, setInput] = useState({ N: 50, P: 50, K: 50, temperature: 28, humidity: 70, ph: 6.5, rainfall: 120 });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -133,50 +133,59 @@ export default function CropPredictionPage() {
             <h2 className="section-title mt-1">Soil and climate profile</h2>
           </div>
 
-          {/* Visual soil type pills */}
+          {/* NPK Sliders */}
           <div>
-            <label className="field-label">Soil Type</label>
-            <div className="flex flex-wrap gap-2 mt-1.5">
-              {['black', 'alluvial', 'red', 'sandy', 'loamy', 'clayey'].map(type => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => setInput({ ...input, soilType: type })}
-                  className="rounded-xl px-3 py-1.5 text-xs font-semibold capitalize transition-all"
-                  style={{
-                    background: input.soilType === type ? 'rgba(26,122,76,0.15)' : 'var(--bg-elevated)',
-                    border: input.soilType === type ? '1px solid rgba(26,122,76,0.4)' : '1px solid var(--border-light)',
-                    color: input.soilType === type ? 'var(--brand-500)' : 'var(--text-secondary)',
-                  }}
-                >
-                  {type}
-                </button>
+            <label className="field-label">NPK Values (Soil Nutrient Levels)</label>
+            <div className="space-y-3 mt-1.5">
+              {[{key:'N',label:'Nitrogen',color:'#41b878',max:140},{key:'P',label:'Phosphorus',color:'#38bdf8',max:140},{key:'K',label:'Potassium',color:'#f0aa73',max:210}].map(item => (
+                <div key={item.key}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center"
+                        style={{ background: `${item.color}18`, color: item.color, border: `1px solid ${item.color}30` }}>
+                        {item.key}
+                      </span>
+                      <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{item.label}</span>
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: item.color }}>{input[item.key]}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input type="range" min={0} max={item.max} value={input[item.key]}
+                      onChange={(e) => setInput({ ...input, [item.key]: Number(e.target.value) })}
+                      className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
+                      style={{ accentColor: item.color }} />
+                    <input className="input w-20 text-center text-sm" type="number" min={0} max={item.max}
+                      value={input[item.key]} onChange={(e) => setInput({ ...input, [item.key]: Number(e.target.value) })} />
+                  </div>
+                </div>
               ))}
             </div>
-            <input
-              className="input mt-2"
-              placeholder="Or type custom soil type"
-              value={input.soilType}
-              onChange={(e) => setInput({ ...input, soilType: e.target.value })}
-            />
           </div>
 
-          <div>
-            <label className="field-label">Region</label>
-            <input className="input" placeholder="e.g. Karnataka" value={input.region}
-              onChange={(e) => setInput({ ...input, region: e.target.value })} />
+          {/* Climate inputs */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="field-label">Temperature (°C)</label>
+              <input className="input" type="number" step="0.1" value={input.temperature}
+                onChange={(e) => setInput({ ...input, temperature: Number(e.target.value) })} />
+            </div>
+            <div>
+              <label className="field-label">Humidity (%)</label>
+              <input className="input" type="number" step="0.1" min={0} max={100} value={input.humidity}
+                onChange={(e) => setInput({ ...input, humidity: Number(e.target.value) })} />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
+              <label className="field-label">Soil pH</label>
+              <input className="input" type="number" step="0.1" min={0} max={14} value={input.ph}
+                onChange={(e) => setInput({ ...input, ph: Number(e.target.value) })} />
+            </div>
+            <div>
               <label className="field-label">Rainfall (mm)</label>
               <input className="input" type="number" value={input.rainfall}
                 onChange={(e) => setInput({ ...input, rainfall: Number(e.target.value) })} />
-            </div>
-            <div>
-              <label className="field-label">Temperature (°C)</label>
-              <input className="input" type="number" value={input.temperature}
-                onChange={(e) => setInput({ ...input, temperature: Number(e.target.value) })} />
             </div>
           </div>
 
@@ -240,22 +249,31 @@ export default function CropPredictionPage() {
                 {result.recommendations.map((rec, idx) => (
                   <div
                     key={rec.crop}
-                    className="flex items-center justify-between rounded-2xl p-3.5"
+                    className="rounded-2xl p-3.5"
                     style={{
                       background: idx === 0 ? 'rgba(26,122,76,0.1)' : 'var(--bg-elevated)',
                       border: idx === 0 ? '1px solid rgba(26,122,76,0.28)' : '1px solid var(--border-light)',
                     }}
                   >
-                    <span className="text-sm font-semibold capitalize" style={{ color: idx === 0 ? 'var(--brand-500)' : 'var(--text-primary)' }}>
-                      {idx === 0 ? '🏆 ' : `${idx + 1}. `}{rec.crop}
-                    </span>
-                    <span className="rounded-full px-2.5 py-0.5 text-xs font-bold" style={{
-                      background: 'var(--bg-card)',
-                      color: 'var(--text-secondary)',
-                      border: '1px solid var(--border-light)',
-                    }}>
-                      {Math.round(rec.score * 100)}%
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold capitalize" style={{ color: idx === 0 ? 'var(--brand-500)' : 'var(--text-primary)' }}>
+                        {idx === 0 ? '🏆 ' : `${idx + 1}. `}{rec.crop}
+                      </span>
+                      <span className="rounded-full px-2.5 py-0.5 text-xs font-bold" style={{
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-secondary)',
+                        border: '1px solid var(--border-light)',
+                      }}>
+                        {Math.round(rec.score * 100)}%
+                      </span>
+                    </div>
+                    {rec.season && (
+                      <div className="flex gap-3 mt-1.5 text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <span>🗓 {rec.season}</span>
+                        <span>💧 {rec.waterNeed}</span>
+                        <span>📅 {rec.growthDays} days</span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

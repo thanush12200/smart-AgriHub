@@ -58,17 +58,23 @@ const chooseDetection = (geminiDetection, mlDetection) => {
 };
 
 const predictCrop = asyncHandler(async (req, res) => {
-  const { soilType, rainfall, temperature, region } = req.body;
+  const { N, P, K, temperature, humidity, ph, rainfall, soilType, region } = req.body;
 
-  if (!soilType || rainfall === undefined || temperature === undefined || !region) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'soilType, rainfall, temperature and region are required');
+  // Validate required fields
+  if (N === undefined || P === undefined || K === undefined ||
+      temperature === undefined || humidity === undefined ||
+      ph === undefined || rainfall === undefined) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'N, P, K, temperature, humidity, ph, and rainfall are required');
   }
 
   const payload = {
-    soilType,
-    rainfall: Number(rainfall),
+    N: Number(N),
+    P: Number(P),
+    K: Number(K),
     temperature: Number(temperature),
-    region
+    humidity: Number(humidity),
+    ph: Number(ph),
+    rainfall: Number(rainfall),
   };
 
   const prediction = await invokeML('/predict/crop', payload);
@@ -76,7 +82,7 @@ const predictCrop = asyncHandler(async (req, res) => {
   await PredictionLog.create({
     user: req.user._id,
     type: 'crop',
-    input: payload,
+    input: { ...payload, soilType, region },
     output: prediction?.recommendations || prediction || { status: 'no_data' },
     confidence: prediction?.confidence || 0,
     modelVersion: prediction?.modelVersion || 'v1'

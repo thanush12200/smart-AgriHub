@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import useDocTitle from '../hooks/useDocTitle';
+
+const CalendarGridScene = lazy(() => import('../components/3d/CalendarGridScene'));
 
 const STATIC_CALENDAR_DATA = [
   { id: 1, crop: 'Wheat', type: 'Rabi', region: 'North', sow: [10, 11], harvest: [3, 4] },
@@ -29,13 +31,37 @@ const CropCalendarPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 animate-fadeIn">
-      <section className="page-hero mb-8">
-        <p className="page-kicker">Planning Guide</p>
-        <h1 className="page-title">Sowing & Harvest Calendar</h1>
-        <p className="page-copy max-w-3xl">
-          Reference guide for planning agricultural activities. Shows approximate sowing and harvesting months for major Indian crops by region and season.
-        </p>
-        <p className="mt-1 text-xs text-slate-400">Timings are indicative and may vary based on local conditions.</p>
+      <section
+        className="relative overflow-hidden rounded-[32px] mb-8"
+        style={{
+          background: 'linear-gradient(160deg, #071510 0%, #0a1e14 60%, #0e2818 100%)',
+          border: '1px solid rgba(41,160,100,0.2)',
+          minHeight: 220,
+        }}
+      >
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <CalendarGridScene className="w-full h-full" />
+          </Suspense>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col justify-end p-6 md:p-8 min-h-[220px]">
+          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 w-fit"
+            style={{ background: 'rgba(41,160,100,0.15)', border: '1px solid rgba(41,160,100,0.3)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#7ad5a0' }}>
+              Planning Guide
+            </span>
+          </div>
+          <h1 className="font-display text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+            Sowing & Harvest Calendar
+          </h1>
+          <p className="mt-2 max-w-3xl text-sm leading-7" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Reference guide for planning agricultural activities. Shows approximate sowing and harvesting months for major Indian crops by region and season.
+          </p>
+          <p className="mt-1 text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Timings are indicative and may vary based on local conditions.</p>
+        </div>
       </section>
 
       <div className="card p-5">

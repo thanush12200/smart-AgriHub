@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
+
+const ProfileAvatarScene = lazy(() => import('../components/3d/ProfileAvatarScene'));
 
 const ProfilePage = () => {
   useDocTitle('Profile');
@@ -50,10 +52,36 @@ const ProfilePage = () => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 animate-fadeIn">
-      <section className="page-hero">
-        <p className="page-kicker">Account</p>
-        <h1 className="page-title">Your Profile</h1>
-        <p className="page-copy">Manage personal details, location preferences, language, and account security from one place.</p>
+      <section
+        className="relative overflow-hidden rounded-[32px]"
+        style={{
+          background: 'linear-gradient(160deg, #071510 0%, #0a1e14 60%, #0e2818 100%)',
+          border: '1px solid rgba(41,160,100,0.2)',
+          minHeight: 200,
+        }}
+      >
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <ProfileAvatarScene className="w-full h-full" />
+          </Suspense>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col justify-end p-6 md:p-8 min-h-[200px]">
+          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 w-fit"
+            style={{ background: 'rgba(41,160,100,0.15)', border: '1px solid rgba(41,160,100,0.3)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#7ad5a0' }}>
+              Account
+            </span>
+          </div>
+          <h1 className="font-display text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+            Your Profile
+          </h1>
+          <p className="mt-2 max-w-lg text-sm leading-7" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Manage personal details, location preferences, language, and account security from one place.
+          </p>
+        </div>
       </section>
 
       <div className="grid gap-6 md:grid-cols-[1fr_2fr]">

@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, Suspense, lazy } from 'react';
 import useDocTitle from '../hooks/useDocTitle';
 import api from '../api/axiosClient';
 import { useAuth } from '../context/AuthContext';
+
+const ChatBubbleScene = lazy(() => import('../components/3d/ChatBubbleScene'));
 
 const SendIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -103,10 +105,36 @@ const ChatbotPage = () => {
 
   return (
     <div className="animate-fadeIn">
-      <section className="page-hero mb-5">
-        <p className="page-kicker">Farm Assistant</p>
-        <h1 className="page-title">Ask anything about farming</h1>
-        <p className="page-copy">Get crop guidance, disease help, fertilizer dosage, and seasonal tips through a production-ready AI assistant tuned to your region and language.</p>
+      <section
+        className="relative overflow-hidden rounded-[32px] mb-5"
+        style={{
+          background: 'linear-gradient(160deg, #071510 0%, #0a1e14 60%, #0e2818 100%)',
+          border: '1px solid rgba(41,160,100,0.2)',
+          minHeight: 220,
+        }}
+      >
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <ChatBubbleScene className="w-full h-full" />
+          </Suspense>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        <div className="relative z-10 flex flex-col justify-end p-6 md:p-8 min-h-[220px]">
+          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-3 w-fit"
+            style={{ background: 'rgba(41,160,100,0.15)', border: '1px solid rgba(41,160,100,0.3)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#7ad5a0' }}>
+              Farm Assistant
+            </span>
+          </div>
+          <h1 className="font-display text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+            Ask anything about farming
+          </h1>
+          <p className="mt-2 max-w-lg text-sm leading-7" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            Get crop guidance, disease help, fertilizer dosage, and seasonal tips through a production-ready AI assistant tuned to your region and language.
+          </p>
+        </div>
       </section>
 
       <div className="card overflow-hidden">
